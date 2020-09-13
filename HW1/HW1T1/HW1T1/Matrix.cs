@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.ComponentModel.DataAnnotations;
 
 namespace HW1T1
 {
@@ -12,9 +13,36 @@ namespace HW1T1
     {
         public int[,] matrix { private set; get; } = null;
 
+        public int CountOfRows { private set; get; } = -1;
+
+        public int CountOfColumns { private set; get; } = -1;
+
+        public Matrix(int countOfRows, int countOfColumns)
+        {
+            if (countOfRows < 1 || countOfColumns < 1)
+            {
+                throw new ArgumentException();
+            }
+            this.matrix = new int[countOfRows, countOfColumns];
+            this.CountOfRows = countOfRows;
+            this.CountOfColumns = countOfColumns;
+        }
+
         public Matrix(string fileName)
         {
             this.LoadAndCreateMatrix(fileName);
+        }
+
+        public void Display()
+        {
+            for (int i = 0; i < matrix.GetLength(1); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(0); j++)
+                {
+                    Console.Write("{0, 3}", this.matrix[i, j]);
+                }
+                Console.WriteLine();
+            }
         }
 
         /// <summary>
@@ -60,6 +88,8 @@ namespace HW1T1
             }
 
             this.matrix = new int[queueOfRows.Count + 1, currentIntegerRow.Count];
+            this.CountOfRows = queueOfRows.Count + 1;
+            this.CountOfColumns = currentIntegerRow.Count;
 
             for (int i = 0; currentIntegerRow.Count > 0; i++)
             {
@@ -99,7 +129,5 @@ namespace HW1T1
             }
 
         }
-
-
     }
 }
