@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography.X509Certificates;
 
 namespace HW1T1
 {
@@ -45,19 +46,14 @@ namespace HW1T1
         /// </summary>
         public void Display()
         {
-            for (int i = 0; i < matrix.GetLength(1); i++)
+            for (int i = 0; i < matrix.GetLength(0); i++)
             {
-                for (int j = 0; j < matrix.GetLength(0); j++)
+                for (int j = 0; j < matrix.GetLength(1); j++)
                 {
                     Console.Write("{0, 3}", this.matrix[i, j]);
                 }
                 Console.WriteLine();
             }
-        }
-
-        public void FillWithRandom()
-        {
-
         }
 
         /// <summary>
@@ -142,7 +138,30 @@ namespace HW1T1
                     iter++;
                 }
             }
+        }
 
+        /// <summary>
+        /// Check that the input matrix is equal to the current. 
+        /// </summary>
+        public bool IsEqualTo(int[,] matrix)
+        {
+            if (this.CountOfColumns != matrix.GetLength(0) || this.CountOfRows != matrix.GetLength(1))
+            {
+                return true;
+            }
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    if (this.matrix[i, j] != matrix[i, j])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }
