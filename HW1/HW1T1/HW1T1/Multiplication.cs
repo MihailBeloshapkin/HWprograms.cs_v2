@@ -21,6 +21,9 @@ namespace HW1T1
             return result;
         }
 
+        /// <summary>
+        /// Simple multiplication operation of two matrices.
+        /// </summary>
         public static Matrix SimpleMultiplication(Matrix matrix1, Matrix matrix2)
         {
 

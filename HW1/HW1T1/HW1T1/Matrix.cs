@@ -33,6 +33,16 @@ namespace HW1T1
             this.LoadAndCreateMatrix(fileName);
         }
 
+        public Matrix(int[,] matrix)
+        {
+            this.matrix = matrix;
+            this.CountOfRows = matrix.GetLength(0);
+            this.CountOfColumns = matrix.GetLength(1);
+        }
+
+        /// <summary>
+        /// Display current matrix to a console.
+        /// </summary>
         public void Display()
         {
             for (int i = 0; i < matrix.GetLength(1); i++)
@@ -43,6 +53,11 @@ namespace HW1T1
                 }
                 Console.WriteLine();
             }
+        }
+
+        public void FillWithRandom()
+        {
+
         }
 
         /// <summary>
