@@ -145,9 +145,9 @@ namespace HW1T1
         /// </summary>
         public bool IsEqualTo(int[,] matrix)
         {
-            if (this.CountOfColumns != matrix.GetLength(0) || this.CountOfRows != matrix.GetLength(1))
+            if (this.CountOfRows != matrix.GetLength(0) || this.CountOfColumns != matrix.GetLength(1))
             {
-                return true;
+                return false;
             }
 
             for (int i = 0; i < matrix.GetLength(0); i++)

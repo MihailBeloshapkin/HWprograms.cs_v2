@@ -9,6 +9,12 @@ namespace HW1T1
     public class Multiplication
     {
 
+        /// <summary>
+        /// Multiply row in the first matrix and column in the second matrix.
+        /// </summary>
+        /// <param name="i">Index of row.</param>
+        /// <param name="j">Index of column.</param>
+        /// <returns></returns>
         private static int MultiplyRowAndColumn(Matrix matrix1, Matrix matrix2, int i, int j)
         {
             int result = 0;
@@ -29,7 +35,7 @@ namespace HW1T1
 
             if (matrix1.CountOfColumns != matrix2.CountOfRows)
             {
-                throw new Exception();
+                throw new ArgumentException();
             }
 
             var result = new Matrix(matrix1.CountOfRows, matrix2.CountOfColumns);
@@ -53,7 +59,7 @@ namespace HW1T1
         {
             if (matrix1.CountOfColumns != matrix2.CountOfRows)
             {
-                throw new Exception();
+                throw new ArgumentException();
             }
 
             var result = new Matrix(matrix1.CountOfRows, matrix2.CountOfColumns);
