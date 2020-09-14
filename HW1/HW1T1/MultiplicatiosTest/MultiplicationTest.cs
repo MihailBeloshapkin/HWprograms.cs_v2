@@ -42,6 +42,22 @@ namespace HW1T1
         }
 
         [Test]
+        public void ParallelMultiplicationTest1()
+        {
+            matrix1 = new Matrix(new int[,] { { 1, 2, 3 } });
+            matrix2 = new Matrix(new int[,] { { 1 }, { 2 }, { 3 } });
+            Assert.IsTrue(Multiplication.ParallelMultiplication(matrix1, matrix2).IsEqualTo(new int[,] { { 14 } }));
+        }
+
+        [Test]
+        public void ParallelMultiplicationTest2()
+        {
+            matrix1 = new Matrix(new int[,] { { 30 } });
+            matrix2 = new Matrix(new int[,] { { 40 } });
+            Assert.IsTrue(Multiplication.SimpleMultiplication(matrix1, matrix2).IsEqualTo(new int[,] { { 1200 } }));
+        }
+
+        [Test]
         public void IncorrectInputForSimpeMultiplicationTest()
         {
             matrix1 = new Matrix(new int[,] { { 1, 2, 3 }, { 4, 2, 1 } });

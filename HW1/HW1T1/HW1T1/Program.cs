@@ -14,6 +14,8 @@ namespace HW1T1
             var matrix1 = new Matrix("../../../matrix1.txt");
             var matrix2 = new Matrix("../../../matrix2.txt");
 
+            Multiplication.SimpleMultiplication(matrix1, matrix2).Display();
+
             var bigMatrix1 = new Matrix("../../../bigMatrix1.txt");
             var bigMatrix2 = new Matrix("../../../bigMatrix2.txt");
 
