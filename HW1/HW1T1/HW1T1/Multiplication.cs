@@ -6,6 +6,9 @@ using System.Threading;
 
 namespace HW1T1
 {
+    /// <summary>
+    /// This class contains parallel and simple multiplication operation.
+    /// </summary>
     public class Multiplication
     {
 

@@ -79,7 +79,7 @@ namespace HW1T1
             {
                 if (!char.IsDigit(currentRow[jiter]) && currentRow[jiter] != ' ' && currentRow[jiter] != '\n' && currentRow[jiter] != '\r')
                 {
-                    throw new Exception();
+                    throw new UnrecognisedCharException();
                 }
 
                 string number = null;
@@ -120,7 +120,7 @@ namespace HW1T1
                     
                     if (!char.IsDigit(currentRow[iter]) && currentRow[iter] != ' ' && currentRow[iter] != '\n' && currentRow[iter] != '\r')
                     {
-                        throw new Exception();
+                        throw new UnrecognisedCharException();
                     }
 
                     while (iter < currentRow.Length && currentRow[iter] != ' ')
