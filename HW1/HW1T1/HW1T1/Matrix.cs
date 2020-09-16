@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
+using System.Transactions;
 
 namespace HW1T1
 {
@@ -14,9 +15,21 @@ namespace HW1T1
     {
         public int[,] matrix { private set; get; } = null;
 
-        public int CountOfRows { private set; get; } = -1;
+        public int CountOfRows 
+        {
+            private set => this.countOfRows = this.matrix.GetLength(0);
+            get => this.countOfRows; 
+        }
 
-        public int CountOfColumns { private set; get; } = -1;
+        private int countOfRows;
+
+        public int CountOfColumns 
+        { 
+            private set => this.CountOfColumns = this.matrix.GetLength(1); 
+            get => this.countOfColumns; 
+        }
+
+        private int countOfColumns;
 
         public Matrix(int countOfRows, int countOfColumns)
         {
@@ -59,7 +72,7 @@ namespace HW1T1
         /// <summary>
         /// Load matrix from txt file and create.
         /// </summary>
-        public void LoadAndCreateMatrix(string fileName)
+        private void LoadAndCreateMatrix(string fileName)
         {
             var queueOfRows = new Queue<string>();
 
@@ -71,45 +84,12 @@ namespace HW1T1
                 }
             }
 
-            var currentRow = queueOfRows.Dequeue();
             var currentIntegerRow = new Queue<int>();
-            int jiter = 0;
-
-            while (jiter < currentRow.Length)
+            
+       
+            for (int i = 0; queueOfRows.Count > 0; i++)
             {
-                if (!char.IsDigit(currentRow[jiter]) && currentRow[jiter] != ' ' && currentRow[jiter] != '\n' && currentRow[jiter] != '\r')
-                {
-                    throw new UnrecognisedCharException();
-                }
-
-                string number = null;
-
-                while (jiter < currentRow.Length && currentRow[jiter] != ' ')
-                {
-                    number += currentRow[jiter];
-                    jiter++;
-                }
-
-                if (number != null)
-                {
-                    currentIntegerRow.Enqueue(int.Parse(number));
-
-                }
-                jiter++;
-            }
-
-            this.matrix = new int[queueOfRows.Count + 1, currentIntegerRow.Count];
-            this.CountOfRows = queueOfRows.Count + 1;
-            this.CountOfColumns = currentIntegerRow.Count;
-
-            for (int i = 0; currentIntegerRow.Count > 0; i++)
-            {
-                matrix[0, i] = currentIntegerRow.Dequeue();
-            }
-
-            for (int i = 1; queueOfRows.Count > 0; i++)
-            {
-                currentRow = queueOfRows.Dequeue();
+                var currentRow = queueOfRows.Dequeue();
 
                 int iter = 0;
                 int rowIndex = 0;
@@ -131,11 +111,27 @@ namespace HW1T1
 
                     if (number != null)
                     {
-                        this.matrix[i, rowIndex] = int.Parse(number);
+                        if (matrix == null)
+                        {
+                            currentIntegerRow.Enqueue(int.Parse(number));
+                        }
+                        else 
+                        {
+                            this.matrix[i, rowIndex] = int.Parse(number);
+                        }
                     }
 
                     rowIndex++;
                     iter++;
+                }
+
+                if (this.matrix == null)
+                {
+                    this.matrix = new int[queueOfRows.Count + 1, currentIntegerRow.Count];
+                    for (int i0 = 0; currentIntegerRow.Count > 0; i0++)
+                    {
+                        matrix[0, i0] = currentIntegerRow.Dequeue();
+                    }
                 }
             }
         }
