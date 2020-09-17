@@ -10,13 +10,6 @@ namespace HW1T1
         private Matrix matrix1;
         private Matrix matrix2;
 
-        [SetUp]
-        public void Setup()
-        {
-            matrix1 = null;
-            matrix2 = null;
-        }
-
         [Test]
         public void SimpleMultiplicationTest1()
         {

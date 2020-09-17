@@ -13,23 +13,11 @@ namespace HW1T1
     /// </summary>
     public class Matrix
     {
-        public int[,] matrix { private set; get; } = null;
+        public int[,] CurrentMatrix { private set; get; } = null;
 
-        public int CountOfRows 
-        {
-            private set => this.countOfRows = this.matrix.GetLength(0);
-            get => this.countOfRows; 
-        }
+        public int CountOfRows { get => CurrentMatrix.GetLength(0); }
 
-        private int countOfRows;
-
-        public int CountOfColumns 
-        { 
-            private set => this.CountOfColumns = this.matrix.GetLength(1); 
-            get => this.countOfColumns; 
-        }
-
-        private int countOfColumns;
+        public int CountOfColumns { get => CurrentMatrix.GetLength(1); }
 
         public Matrix(int countOfRows, int countOfColumns)
         {
@@ -37,9 +25,7 @@ namespace HW1T1
             {
                 throw new ArgumentException();
             }
-            this.matrix = new int[countOfRows, countOfColumns];
-            this.CountOfRows = countOfRows;
-            this.CountOfColumns = countOfColumns;
+            this.CurrentMatrix = new int[countOfRows, countOfColumns];
         }
 
         public Matrix(string fileName)
@@ -49,9 +35,7 @@ namespace HW1T1
 
         public Matrix(int[,] matrix)
         {
-            this.matrix = matrix;
-            this.CountOfRows = matrix.GetLength(0);
-            this.CountOfColumns = matrix.GetLength(1);
+            this.CurrentMatrix = matrix;
         }
 
         /// <summary>
@@ -59,11 +43,11 @@ namespace HW1T1
         /// </summary>
         public void Display()
         {
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            for (int i = 0; i < CurrentMatrix.GetLength(0); i++)
             {
-                for (int j = 0; j < matrix.GetLength(1); j++)
+                for (int j = 0; j < CurrentMatrix.GetLength(1); j++)
                 {
-                    Console.Write("{0, 3}", this.matrix[i, j]);
+                    Console.Write("{0, 3}", this.CurrentMatrix[i, j]);
                 }
                 Console.WriteLine();
             }
@@ -111,13 +95,13 @@ namespace HW1T1
 
                     if (number != null)
                     {
-                        if (matrix == null)
+                        if (CurrentMatrix == null)
                         {
                             currentIntegerRow.Enqueue(int.Parse(number));
                         }
                         else 
                         {
-                            this.matrix[i, rowIndex] = int.Parse(number);
+                            this.CurrentMatrix[i, rowIndex] = int.Parse(number);
                         }
                     }
 
@@ -125,12 +109,13 @@ namespace HW1T1
                     iter++;
                 }
 
-                if (this.matrix == null)
+                if (this.CurrentMatrix == null)
                 {
-                    this.matrix = new int[queueOfRows.Count + 1, currentIntegerRow.Count];
+                    this.CurrentMatrix = new int[queueOfRows.Count + 1, currentIntegerRow.Count];
+                
                     for (int i0 = 0; currentIntegerRow.Count > 0; i0++)
                     {
-                        matrix[0, i0] = currentIntegerRow.Dequeue();
+                        CurrentMatrix[0, i0] = currentIntegerRow.Dequeue();
                     }
                 }
             }
@@ -150,7 +135,7 @@ namespace HW1T1
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    if (this.matrix[i, j] != matrix[i, j])
+                    if (this.CurrentMatrix[i, j] != matrix[i, j])
                     {
                         return false;
                     }

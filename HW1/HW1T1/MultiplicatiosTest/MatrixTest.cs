@@ -8,13 +8,7 @@ namespace HW1T1
 {
     public class MatrixTest
     {
-        Matrix matrix;
-
-        [SetUp]
-        public void Setup()
-        {
-
-        }
+        private Matrix matrix;
 
         [Test]
         public void IsEqualToTest()

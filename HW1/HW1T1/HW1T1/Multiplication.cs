@@ -17,14 +17,13 @@ namespace HW1T1
         /// </summary>
         /// <param name="i">Index of row.</param>
         /// <param name="j">Index of column.</param>
-        /// <returns></returns>
         private static int MultiplyRowAndColumn(Matrix matrix1, Matrix matrix2, int i, int j)
         {
             int result = 0;
 
             for (int iter = 0; iter < matrix1.CountOfColumns; iter++)
             {
-                result += matrix1.matrix[i, iter] * matrix2.matrix[iter, j];
+                result += matrix1.CurrentMatrix[i, iter] * matrix2.CurrentMatrix[iter, j];
             }
 
             return result;
@@ -38,7 +37,8 @@ namespace HW1T1
 
             if (matrix1.CountOfColumns != matrix2.CountOfRows)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Multiplication is impossible because count of columns in the first matrix " +
+                    "is not equal to the count of rows in the second.");
             }
 
             var result = new Matrix(matrix1.CountOfRows, matrix2.CountOfColumns);
@@ -47,7 +47,7 @@ namespace HW1T1
             {
                 for (int j = 0; j < result.CountOfColumns; j++)
                 {
-                    result.matrix[i, j] = MultiplyRowAndColumn(matrix1, matrix2, i, j);
+                    result.CurrentMatrix[i, j] = MultiplyRowAndColumn(matrix1, matrix2, i, j);
                 }
             }
 
@@ -79,7 +79,7 @@ namespace HW1T1
                     {
                         for (int j = 0; j < result.CountOfColumns; j++)
                         {
-                            result.matrix[i, j] = MultiplyRowAndColumn(matrix1, matrix2, i, j);
+                            result.CurrentMatrix[i, j] = MultiplyRowAndColumn(matrix1, matrix2, i, j);
                         }
                     }
                 }

@@ -14,8 +14,6 @@ namespace HW1T1
             var matrix1 = new Matrix("../../../matrix1.txt");
             var matrix2 = new Matrix("../../../matrix2.txt");
 
-            Multiplication.SimpleMultiplication(matrix1, matrix2).Display();
-
             var bigMatrix1 = new Matrix("../../../bigMatrix1.txt");
             var bigMatrix2 = new Matrix("../../../bigMatrix2.txt");
 
@@ -40,14 +38,14 @@ namespace HW1T1
             Multiplication.ParallelMultiplication(bigMatrix1, bigMatrix2);
             sw4.Stop();
 
-            Console.Write(sw1.ElapsedMilliseconds / 100.0);
+            Console.Write($"Time of the simple multiplication of two simple matrices: {sw1.ElapsedMilliseconds / 100.0}");
             Console.WriteLine();
-            Console.Write(sw2.ElapsedMilliseconds / 100.0);
+            Console.Write($"Time of the parallel multiplication of two simple matrices: {sw2.ElapsedMilliseconds / 100.0}");
             Console.WriteLine();
             Console.WriteLine();
-            Console.Write(sw3.ElapsedMilliseconds / 100.0);
+            Console.Write($"Time of the simple multiplication of two big matrices:{sw3.ElapsedMilliseconds / 100.0}");
             Console.WriteLine();
-            Console.Write(sw4.ElapsedMilliseconds / 100.0);
+            Console.Write($"Time of the parallel multiplication of two big matrices:{sw4.ElapsedMilliseconds / 100.0}");
 
 
         }
