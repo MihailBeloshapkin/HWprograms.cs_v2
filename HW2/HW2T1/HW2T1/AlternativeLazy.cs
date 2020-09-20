@@ -23,6 +23,10 @@ namespace HW2T1
 
         private Object locker = new Object();
 
+        /// <summary>
+        /// Calculate result.
+        /// </summary>
+        /// <returns>Result of the calculation.</returns>
         public T Get()
         {
             if (!AlreadyCounted)
