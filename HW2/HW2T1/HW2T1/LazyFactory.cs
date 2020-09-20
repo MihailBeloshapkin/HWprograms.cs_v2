@@ -8,7 +8,7 @@ namespace HW2T1
     {
         public static ILazy<T> CreateSimpleLazy(Func<T> supplier)
         {
-            return new SimpleLazy<T>();
+            return new SimpleLazy<T>(supplier);
         }
 
         /// <summary>
@@ -16,7 +16,7 @@ namespace HW2T1
         /// </summary>
         public static ILazy<T> CreateAlternativeLazy(Func<T> supplier)
         {
-            return new AlternativeLazy<T>();
+            return new AlternativeLazy<T>(supplier);
         }
     }
 }
