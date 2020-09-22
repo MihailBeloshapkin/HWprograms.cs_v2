@@ -32,7 +32,7 @@ namespace HW2T1
                 result = supplier();
                 AlreadyCounter = true;
             }
-
+            
             return result;
         }
     }

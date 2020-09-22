@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using NUnit.Framework;
 
 namespace LazyTests
 {
-    class AlternaviveLazyTest
+    public class AlternativeLazyTest
     {
+        [Test]
+        public void CommonTest1()
+        {
+            Assert.Pass();
+        }
     }
 }

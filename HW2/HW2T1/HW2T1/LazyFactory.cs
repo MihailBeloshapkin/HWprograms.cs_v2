@@ -8,6 +8,11 @@ namespace HW2T1
     {
         public static ILazy<T> CreateSimpleLazy(Func<T> supplier)
         {
+            if (supplier == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             return new SimpleLazy<T>(supplier);
         }
 
@@ -16,6 +21,11 @@ namespace HW2T1
         /// </summary>
         public static ILazy<T> CreateAlternativeLazy(Func<T> supplier)
         {
+            if (supplier == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             return new AlternativeLazy<T>(supplier);
         }
     }

@@ -6,6 +6,6 @@ namespace HW2T1
 {
     public interface ILazy<T>
     {
-        T Get();
+        public T Get();
     }
 }
