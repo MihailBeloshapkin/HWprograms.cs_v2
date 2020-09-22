@@ -33,6 +33,11 @@ namespace HW2T1
             {
                 lock(locker)
                 {
+                    if (AlreadyCounted)
+                    {
+                        return result;
+                    }
+
                     result = supplier();
                     AlreadyCounted = true;
                 }
