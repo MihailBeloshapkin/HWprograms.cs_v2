@@ -6,6 +6,9 @@ namespace HW2T1
 {
     public class LazyFactory<T>
     {
+        /// <summary>
+        /// Create simple lazy class. 
+        /// </summary>
         public static ILazy<T> CreateSimpleLazy(Func<T> supplier)
         {
             if (supplier == null)

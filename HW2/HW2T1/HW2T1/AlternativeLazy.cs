@@ -39,6 +39,7 @@ namespace HW2T1
                     }
 
                     result = supplier();
+                    supplier = null;
                     AlreadyCounted = true;
                 }
             }
