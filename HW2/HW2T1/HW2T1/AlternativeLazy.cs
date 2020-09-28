@@ -7,7 +7,6 @@ namespace HW2T1
     /// <summary>
     /// Alternative Lazy realization.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class AlternativeLazy<T> : ILazy<T>
     {
         public AlternativeLazy(Func<T> supplier)

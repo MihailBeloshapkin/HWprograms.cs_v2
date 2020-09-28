@@ -7,7 +7,6 @@ namespace HW2T1
     /// <summary>
     /// Simple realization of ILazy interface.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class SimpleLazy<T> : ILazy<T>
     {
         public SimpleLazy(Func<T> supplier)
