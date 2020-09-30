@@ -18,7 +18,7 @@ namespace HW2T1
 
         private Func<T> supplier;
 
-        private bool AlreadyCounter { get; set; } = false; 
+        private bool AlreadyCountet = false; 
 
         /// <summary>
         /// Calculate result.
@@ -26,10 +26,11 @@ namespace HW2T1
         /// <returns>Result of the calculation.</returns>
         public T Get()
         {
-            if (!AlreadyCounter)
+            if (!AlreadyCountet)
             {
                 result = supplier();
-                AlreadyCounter = true;
+                supplier = null;
+                AlreadyCountet = true;
             }
             
             return result;

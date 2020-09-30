@@ -18,7 +18,7 @@ namespace HW2T1
 
         private Func<T> supplier;
 
-        private bool AlreadyCounted { get; set; } = false;
+        private volatile bool AlreadyCounted = false;
 
         private Object locker = new Object();
 
