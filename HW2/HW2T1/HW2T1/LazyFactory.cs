@@ -7,7 +7,6 @@ namespace HW2T1
     /// <summary>
     /// Create diffrent lazy realizations.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class LazyFactory<T>
     {
         /// <summary>
