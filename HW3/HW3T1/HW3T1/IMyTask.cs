@@ -4,6 +4,10 @@ using System.Text;
 
 namespace HW3T1
 {
+    /// <summary>
+    /// My Tsak interface.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
     public interface IMyTask<out TResult>
     {
         /// <summary>

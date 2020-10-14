@@ -32,12 +32,12 @@ namespace HW3T1
         {
             for (int iter = 0; iter < Threads.Length; iter++)
             {
-                Threads[iter] = new Thread(() => Run(cancellationTokenSource.Token));
+                Threads[iter] = new Thread(() => Execute(cancellationTokenSource.Token));
                 Threads[iter].Start();
             }
         }
 
-        public void Run(CancellationToken cancellationToken)
+        public void Execute(CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -65,6 +65,7 @@ namespace HW3T1
                 throw new ArgumentNullException();
             }
 
+            var newTask = 
             this.Tasks.Enqueue();
             return null;
         }
