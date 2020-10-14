@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Threading;
 
 namespace HW3T1
 {
@@ -15,18 +16,25 @@ namespace HW3T1
 
         TResult result;
 
-        public TResult Result = default(TResult);
+        public TResult Result { get; } = default(TResult);
 
-        public bool IsCompleted = false;
+        public bool IsCompleted { get; set; } = false;
+
+        private MyThreadPool threadPool = null;
 
         private Func<TResult> func;
 
         private AggregateException aggregateException = null;
 
+        public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func)
+        {
+            return this;
+        }
+
         /// <summary>
         /// Apply function to result.
         /// </summary>
-        private void Execute()
+        public void Execute()
         {
             try
             {

@@ -65,8 +65,8 @@ namespace HW3T1
                 throw new ArgumentNullException();
             }
 
-            var newTask = 
-            this.Tasks.Enqueue();
+            var newTask = new MyTask<TResult>(func);
+            this.Tasks.Enqueue(newTask.Execute);
             return null;
         }
     }
