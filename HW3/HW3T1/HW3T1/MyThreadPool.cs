@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Text;
 using System.Threading;
@@ -16,7 +17,7 @@ namespace HW3T1
             this.countOfThreads = countOfThreads;
             this.Threads = new Thread[countOfThreads];
             this.cancellationTokenSource = new CancellationTokenSource();
-            this.Tasks = new ThreadQueue<Action>();
+            this.Tasks = new ConcurrentQueue<Action>();
             this.Start();
         }
 
@@ -26,8 +27,13 @@ namespace HW3T1
 
         private readonly CancellationTokenSource cancellationTokenSource = null;
 
-        private readonly ThreadQueue<Action> Tasks = null;
+        private readonly ConcurrentQueue<Action> Tasks = null;
 
+        private Object locker = new Object();
+
+        /// <summary>
+        /// Start all threads.
+        /// </summary>
         private void Start()
         {
             for (int iter = 0; iter < Threads.Length; iter++)
@@ -42,15 +48,11 @@ namespace HW3T1
         /// </summary>
         public void Execute(CancellationToken cancellationToken)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                if (cancellationToken.IsCancellationRequested)
+                if (this.Tasks.TryDequeue(out Action task))
                 {
-
-                }
-                else 
-                { 
-
+                    task.Invoke();
                 }
             }
         }
@@ -60,8 +62,6 @@ namespace HW3T1
         /// </summary>
         public void Shutdown()
             => cancellationTokenSource.Cancel();
-
-        
 
         /// <summary>
         /// Submit new function.
@@ -74,9 +74,10 @@ namespace HW3T1
                 throw new ArgumentNullException();
             }
 
-            var newTask = new MyTask<TResult>(func, this);
+           var newTask = new MyTask<TResult>(func, this);
             this.Tasks.Enqueue(newTask.Execute);
             return newTask;
+          
         }
 
         private class MyTask<TResult> : IMyTask<TResult>
@@ -109,7 +110,7 @@ namespace HW3T1
 
             private TResult result = default(TResult);
 
-            private Object locker;
+            private Object locker = new Object();
 
             public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> newFunc)
             {
