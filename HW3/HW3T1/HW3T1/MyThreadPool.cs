@@ -103,11 +103,11 @@ namespace HW3T1
                 this.submitFunctionsQueue = new Queue<Action>();
             }
 
-
             public TResult Result
             {
                 get
                 {
+                    waitResult.Wait();
                     return this.result;
                 }
             }
@@ -125,6 +125,8 @@ namespace HW3T1
             private TResult result = default(TResult);
 
             private Object locker = new Object();
+
+            private readonly CountdownEvent waitResult = new CountdownEvent(1);
 
             public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> newFunc)
             {
@@ -167,6 +169,7 @@ namespace HW3T1
                         {
                             threadPool.SubmitAction<TResult>(submitFunctionsQueue.Dequeue());
                         }
+                        waitResult.Signal();
                     }
                     
                 }
