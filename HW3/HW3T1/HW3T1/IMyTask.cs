@@ -21,11 +21,8 @@ namespace HW3T1
         TResult Result { get; }
 
         /// <summary>
-        /// 
+        /// Apply new function to previous result.
         /// </summary>
-        /// <typeparam name="TNewResult"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
         IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func);
     }
 }
