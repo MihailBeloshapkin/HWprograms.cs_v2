@@ -6,8 +6,7 @@ namespace HW3T1
     public class Tests
     {
         private MyThreadPool threadPool;
-        private Object locker = new object();
-
+        
         [SetUp]
         public void SetUp()
         {
