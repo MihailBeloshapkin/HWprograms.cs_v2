@@ -82,6 +82,9 @@ namespace HW3T1
             }
         }
 
+        /// <summary>
+        /// Submit new action.
+        /// </summary>
         private void SubmitAction<TResult>(Action action)
         {
             if (!cancellationTokenSource.IsCancellationRequested)
@@ -128,6 +131,9 @@ namespace HW3T1
 
             private readonly CountdownEvent waitResult = new CountdownEvent(1);
 
+            /// <summary>
+            /// Apply new function to a previous result.
+            /// </summary>
             public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> newFunc)
             {
                 if (newFunc == null)
