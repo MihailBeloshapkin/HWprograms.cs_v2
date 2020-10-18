@@ -5,14 +5,16 @@ namespace HW3T1
 {
     public class Tests
     {
-        MyThreadPool threadPool;
+        private MyThreadPool threadPool;
+        private Object locker = new object();
 
         [Test]
         public void SimpleTest()
         {
-            threadPool = new MyThreadPool(2);
-            var task = threadPool.Submit<int>(() => 2 + 3);
-            Assert.AreEqual(5, task.Result);
+            threadPool = new MyThreadPool(1);
+            var task = threadPool.Submit<int>(() => 2 * 2);
+            Assert.IsTrue(task.IsCompleted);
+            Assert.AreEqual(4, task.Result);
         }
     }
 }

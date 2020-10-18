@@ -74,12 +74,26 @@ namespace HW3T1
                 throw new ArgumentNullException();
             }
 
-           var newTask = new MyTask<TResult>(func, this);
-            this.Tasks.Enqueue(newTask.Execute);
-            return newTask;
-          
+            lock (locker)
+            {
+                var newTask = new MyTask<TResult>(func, this);
+                this.Tasks.Enqueue(newTask.Execute);
+                return newTask;
+            }
         }
 
+        private void SubmitAction<TResult>(Action action)
+        {
+            if (!cancellationTokenSource.IsCancellationRequested)
+            {
+                this.Tasks.Enqueue(action);
+            }
+        }
+
+        /// <summary>
+        /// Task and its methods.
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
         private class MyTask<TResult> : IMyTask<TResult>
         {
             public MyTask(Func<TResult> func, MyThreadPool threadPool)
@@ -146,7 +160,15 @@ namespace HW3T1
                 }
                 finally
                 {
-                    this.IsCompleted = true;
+                    lock (locker)
+                    {
+                        this.IsCompleted = true;
+                        while (submitFunctionsQueue.Count > 0)
+                        {
+                            threadPool.SubmitAction<TResult>(submitFunctionsQueue.Dequeue());
+                        }
+                    }
+                    
                 }
             }
         }
