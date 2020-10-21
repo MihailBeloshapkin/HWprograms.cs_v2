@@ -14,20 +14,18 @@ namespace HW3T1
     {
         public MyThreadPool(int countOfThreads)
         {
-            this.countOfThreads = countOfThreads;
-            this.Threads = new Thread[countOfThreads];
+            this.threads = new Thread[countOfThreads];
             this.cancellationTokenSource = new CancellationTokenSource();
-            this.Tasks = new ConcurrentQueue<Action>();
+            this.tasks = new ConcurrentQueue<Action>();
             this.Start();
         }
 
-        private int countOfThreads = 0;
-
-        private Thread[] Threads = null;
+        
+        private Thread[] threads = null;
 
         private readonly CancellationTokenSource cancellationTokenSource = null;
 
-        private readonly ConcurrentQueue<Action> Tasks = null;
+        private ConcurrentQueue<Action> tasks = null;
 
         private Object locker = new Object();
 
@@ -36,10 +34,10 @@ namespace HW3T1
         /// </summary>
         private void Start()
         {
-            for (int iter = 0; iter < Threads.Length; iter++)
+            for (int iter = 0; iter < threads.Length; iter++)
             {
-                Threads[iter] = new Thread(() => Execute(cancellationTokenSource.Token));
-                Threads[iter].Start();
+                threads[iter] = new Thread(() => Execute(cancellationTokenSource.Token));
+                threads[iter].Start();
             }
         }
 
@@ -50,9 +48,13 @@ namespace HW3T1
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (this.Tasks.TryDequeue(out Action task))
+                if (this.tasks.TryDequeue(out Action task))
                 {
                     task.Invoke();
+                }
+                else
+                {
+
                 }
             }
         }
@@ -61,7 +63,10 @@ namespace HW3T1
         /// Interrupts all executing tasks.
         /// </summary>
         public void Shutdown()
-            => cancellationTokenSource.Cancel();
+        {
+            this.tasks = null;
+            cancellationTokenSource.Cancel();
+        }
 
         /// <summary>
         /// Submit new function.
@@ -74,12 +79,9 @@ namespace HW3T1
                 throw new ArgumentNullException();
             }
 
-            lock (locker)
-            {
-                var newTask = new MyTask<TResult>(func, this);
-                this.Tasks.Enqueue(newTask.Execute);
-                return newTask;
-            }
+            var newTask = new MyTask<TResult>(func, this);
+            this.tasks.Enqueue(newTask.Execute);
+            return newTask;
         }
 
         /// <summary>
@@ -89,14 +91,13 @@ namespace HW3T1
         {
             if (!cancellationTokenSource.IsCancellationRequested)
             {
-                this.Tasks.Enqueue(action);
+                this.tasks.Enqueue(action);
             }
         }
 
         /// <summary>
         /// Task and its methods.
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
         private class MyTask<TResult> : IMyTask<TResult>
         {
             public MyTask(Func<TResult> func, MyThreadPool threadPool)
@@ -115,7 +116,7 @@ namespace HW3T1
                 }
             }
 
-            public bool IsCompleted { get; set; } = false;
+            public bool IsCompleted { get; private set; } = false;
 
             private MyThreadPool threadPool = null;
 
@@ -138,7 +139,11 @@ namespace HW3T1
             {
                 if (newFunc == null)
                 {
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException("Input function equals null.");
+                }
+                if (this.threadPool.cancellationTokenSource.IsCancellationRequested)
+                {
+                    throw new ApplicationException("Shutdown method has alredy been called.");
                 }
 
                 lock (locker)
@@ -147,6 +152,7 @@ namespace HW3T1
                     {
                         return threadPool.Submit(() => newFunc(result));
                     }
+
                     var newTask = new MyTask<TNewResult>(() => newFunc(result), threadPool);
                     this.submitFunctionsQueue.Enqueue(newTask.Execute);
                     return newTask;

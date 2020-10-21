@@ -5,9 +5,8 @@ using System.Text;
 namespace HW3T1
 {
     /// <summary>
-    /// My Tsak interface.
+    /// My Task interface.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
     public interface IMyTask<out TResult>
     {
         /// <summary>
@@ -16,7 +15,7 @@ namespace HW3T1
         bool IsCompleted { get; }
 
         /// <summary>
-        /// Result.
+        /// Blocks the caller unteil the end of a calculation.
         /// </summary>
         TResult Result { get; }
 
