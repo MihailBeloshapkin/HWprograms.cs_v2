@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace HW3T1
 {
@@ -28,6 +29,8 @@ namespace HW3T1
         private ConcurrentQueue<Action> tasks = null;
 
         private Object locker = new Object();
+
+        private AutoResetEvent taskController = new AutoResetEvent(false);
 
         /// <summary>
         /// Start all threads.
@@ -54,7 +57,7 @@ namespace HW3T1
                 }
                 else
                 {
-
+                    taskController.WaitOne();
                 }
             }
         }
@@ -81,6 +84,7 @@ namespace HW3T1
 
             var newTask = new MyTask<TResult>(func, this);
             this.tasks.Enqueue(newTask.Execute);
+            taskController.Set();
             return newTask;
         }
 
@@ -92,6 +96,7 @@ namespace HW3T1
             if (!cancellationTokenSource.IsCancellationRequested)
             {
                 this.tasks.Enqueue(action);
+                taskController.Set();
             }
         }
 
