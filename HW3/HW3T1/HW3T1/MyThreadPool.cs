@@ -82,6 +82,11 @@ namespace HW3T1
                 throw new ArgumentNullException();
             }
 
+            if (this.cancellationTokenSource.IsCancellationRequested)
+            {
+                throw new InvalidOperationException();
+            }
+
             var newTask = new MyTask<TResult>(func, this);
             this.tasks.Enqueue(newTask.Execute);
             taskController.Set();
