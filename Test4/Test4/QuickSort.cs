@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Test4
 {
@@ -9,18 +10,18 @@ namespace Test4
 	/// This class contains diffrent realizations 
 	/// of the QuickSort method.
 	/// </summary>
-    public class QuickSort
-    {
+	public class QuickSort
+	{
 
 		/// <summary>
 		/// Simple realization.
 		/// </summary>
 		public static void SimpleQuickSort(int[] array, int head, int tail)
-        {
+		{
 			int indexOfElement = (head + tail) / 2;
 			int indexOfHead = head - 1;
 			int indexOfTail = tail + 1;
-			
+
 			if (head >= tail)
 			{
 				return;
@@ -61,12 +62,21 @@ namespace Test4
 			SimpleQuickSort(array, indexOfElement + 1, tail);
 		}
 
+		/// <summary>
+		/// Parallel Quick Sort realization
+		/// </summary>
 		public static void ParallelQuickSort(int[] array, int head, int tail)
 		{
+			if (tail - head < 2000)
+			{
+				SimpleQuickSort(array, head, tail);
+				return;
+			}
+
 			int indexOfElement = (head + tail) / 2;
 			int indexOfHead = head - 1;
 			int indexOfTail = tail + 1;
-			
+
 			if (head >= tail)
 			{
 				return;
@@ -103,14 +113,10 @@ namespace Test4
 				}
 			}
 
-			var FirstThread = new Thread(() => ParallelQuickSort(array, head, indexOfElement - 1));
-			var SecondThread = new Thread(() => ParallelQuickSort(array, indexOfElement + 1, tail));
-			
-			FirstThread.Start();
-			SecondThread.Start();
-			
-			FirstThread.Join();
-			SecondThread.Join();
+			Parallel.Invoke(
+				() => ParallelQuickSort(array, head, indexOfElement - 1),
+				() => ParallelQuickSort(array, indexOfElement + 1, tail));
+
 		}
-    }
+	}
 }
