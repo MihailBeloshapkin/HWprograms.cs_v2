@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Atributes;
+using System.IO;
 using System.Threading.Tasks;
 using System.Reflection;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+
 
 
 namespace HW5T1
@@ -35,7 +37,7 @@ namespace HW5T1
 
         }
 
-
+        /*
         private static void ExecuteTest(TestInfo info)
         {
             var attribute = (TestAttribute)info.Method.GetCustomAttribute(typeof(TestAttribute));
@@ -76,6 +78,7 @@ namespace HW5T1
             {
                 method.Invoke(instance, null);
             }
-        }
+            
+        }*/
     }
 }

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW5T1", "HW5T1\HW5T1.csproj", "{BA0CBC5D-EFE7-4059-908C-493C8DC50486}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HW5T1", "HW5T1\HW5T1.csproj", "{BA0CBC5D-EFE7-4059-908C-493C8DC50486}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atributes", "Atributes\Atributes.csproj", "{FA0D4BF8-52C8-4619-AA01-50737843B2D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{BA0CBC5D-EFE7-4059-908C-493C8DC50486}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA0CBC5D-EFE7-4059-908C-493C8DC50486}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA0CBC5D-EFE7-4059-908C-493C8DC50486}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA0D4BF8-52C8-4619-AA01-50737843B2D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA0D4BF8-52C8-4619-AA01-50737843B2D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA0D4BF8-52C8-4619-AA01-50737843B2D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA0D4BF8-52C8-4619-AA01-50737843B2D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
