@@ -27,21 +27,66 @@ namespace Test5
 
         private int number1;
         private int number2;
-        private int operation;
+        private int operation = -1;
+        private int countOfAlreadyInput = 0;
 
+        /// <summary>
+        /// Get final result.
+        /// </summary>
+        private void GetResult()
+        {
+            if (this.countOfAlreadyInput > 2)
+            {
+                switch (operation)
+                {
+                    case 0:
+                        MessageBox.Show($"{number1 + number2}");
+                        break;
+                    case 1:
+                        MessageBox.Show($"{number1 - number2}");
+                        break;
+                    case 2:
+                        MessageBox.Show($"{number1 * number2}");
+                        break;
+                    case 3:
+                        MessageBox.Show($"{number1 / number2}");
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get selected operation.
+        /// </summary>
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var item = comboBox1.SelectedIndex;
+            this.operation = comboBox1.SelectedIndex;
+            this.countOfAlreadyInput++;
+            this.GetResult();
         }
 
+        /// <summary>
+        /// Get the result using data from testBox1
+        /// </summary>
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.number1 = Int32.Parse(textBox1.Text);
+            if (Int32.TryParse(textBox1.Text, out this.number1))
+            {
+                this.countOfAlreadyInput++;
+                this.GetResult();
+            }
         }
 
+        /// <summary>
+        /// Get the result using data from testBox2
+        /// </summary>
         private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
         {
-            this.number2 = Int32.Parse(textBox2.Text);
+            if (Int32.TryParse(textBox2.Text, out this.number2))
+            {
+                this.countOfAlreadyInput++;
+                this.GetResult();
+            }
         }
     }
 }
