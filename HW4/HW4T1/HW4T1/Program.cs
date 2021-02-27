@@ -6,7 +6,10 @@ namespace HW4T1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            for (int iter = 0; iter < 100; iter++)
+            {
+                Console.WriteLine("MM");
+            }
         }
     }
 }
