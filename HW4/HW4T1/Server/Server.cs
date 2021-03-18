@@ -64,6 +64,11 @@ namespace Server
                 await writer.WriteLineAsync("-1");
                 return;
             }
+
+            await writer.WriteAsync($"{new FileInfo(path).Length}");
+            using var fileStream = File.OpenRead(path);
+            await fileStream.CopyToAsync(writer.BaseStream);
+            await writer.WriteLineAsync();
         }
 
     }
