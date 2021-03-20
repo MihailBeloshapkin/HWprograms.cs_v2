@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Atributes
 {
-    public class Test : Attribute
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    public class TestAttribute : Attribute
     {
         public Type Expected { get; set; }
 
