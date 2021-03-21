@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Atributes
+namespace Attributes
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class Before : Attribute

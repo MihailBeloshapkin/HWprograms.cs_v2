@@ -8,7 +8,16 @@ namespace HW5T1
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            try
+            {
+                var nunit = new MyNUnit("../../../../SuccessTests");
+                nunit.Execute();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
         }
     }
 }
