@@ -17,23 +17,31 @@ namespace HW5T1
     /// </summary>
     public class MyNUnit
     {
-        private SetOfMethods methods;
-
-        public ConcurrentQueue<ConcurrentQueue<TestInfo>> ClassQueue { get; private set; }
+        private List<string> declarationErrors;
 
         private readonly string pathToAssemblies;
+
+        private SetOfMethods methods;
+
+        public ConcurrentQueue<ConcurrentQueue<TestData>> GeneralSet { get; private set; }
+
 
         public MyNUnit(string pathToAssemblies)
         {
             this.pathToAssemblies = pathToAssemblies;
+            this.declarationErrors = new List<string>();
         }
 
-        public List<TestInfo> GetAllData()
+        /// <summary>
+        /// Get list of methods and delete all data from queue.
+        /// </summary>
+        /// <returns></returns>
+        public List<TestData> GetAllData()
         {
-            var allData = new List<TestInfo>();
-            while (!this.ClassQueue.IsEmpty)
+            var allData = new List<TestData>();
+            while (!this.GeneralSet.IsEmpty)
             {
-                this.ClassQueue.TryDequeue(out var information);
+                this.GeneralSet.TryDequeue(out var information);
                 while (!information.IsEmpty)
                 {
                     information.TryDequeue(out var data);
@@ -44,6 +52,9 @@ namespace HW5T1
             return allData;
         }
 
+        /// <summary>
+        /// Load all data and execute tests from specified path.
+        /// </summary>
         public void Execute()
         {
             var files = Directory.EnumerateFiles(this.pathToAssemblies, "*.dll", SearchOption.AllDirectories);
@@ -56,54 +67,54 @@ namespace HW5T1
             Parallel.ForEach(files, x => assemblies.Enqueue(Assembly.LoadFrom(x)));
             var classes = assemblies.Distinct().SelectMany(x => x.ExportedTypes).Where(y => y.IsClass);
             var types = classes.Where(x => x.GetMethods().Any(y => y.GetCustomAttributes().Any(z => z is Test)));
-            this.ClassQueue = new ConcurrentQueue<ConcurrentQueue<TestInfo>>();
+            this.GeneralSet = new ConcurrentQueue<ConcurrentQueue<TestData>>();
             
             Parallel.ForEach(types, (type) => 
             {
-                DistributeMethodsByAttributes(type);
-                var testInfo = new ConcurrentQueue<TestInfo>();
-
-                if (!this.BeforeClassOrAfterClassTest(testInfo, this.methods.BeforeClass))
+                this.declarationErrors = Distribution.SortMethods(out methods, type);
+                if (this.declarationErrors.Count != 0)
                 {
-                    this.ClassQueue.Enqueue(testInfo);
                     return;
                 }
 
-                var currentQueue = new ConcurrentQueue<TestInfo>();
-                Parallel.ForEach(this.methods.Tests, (test) => this.RunTest(type, test, currentQueue));
+                var testInfo = new ConcurrentQueue<TestData>();
 
-                if (!this.BeforeClassOrAfterClassTest(testInfo, this.methods.AfterClass))
+                if (!this.TryToExecuteBeforeClassOrAfterClassTest(testInfo, this.methods.BeforeClass))
                 {
-                    this.ClassQueue.Enqueue(testInfo);
+                    this.GeneralSet.Enqueue(testInfo);
                     return;
                 }
 
-                this.ClassQueue.Enqueue(currentQueue);
+                var currentQueue = new ConcurrentQueue<TestData>();
+                Parallel.ForEach(this.methods.Tests, (test) => this.ExecuteTest(type, test, currentQueue));
+
+                if (!this.TryToExecuteBeforeClassOrAfterClassTest(testInfo, this.methods.AfterClass))
+                {
+                    this.GeneralSet.Enqueue(testInfo);
+                    return;
+                }
+                this.GeneralSet.Enqueue(currentQueue);
             });
-
         }
 
         /// <summary>
         /// Execute test. 
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="method"></param>
-        /// <param name="queue"></param>
-        private void RunTest(Type type, MethodInfo method, ConcurrentQueue<TestInfo> queue)
+        private void ExecuteTest(Type type, MethodInfo method, ConcurrentQueue<TestData> queue)
         {
             var property = (Test)Attribute.GetCustomAttribute(method, typeof(Test));
             if (property.Ignore != null)
             {
-                queue.Enqueue(new TestInfo(method.Name, "Ignored", property.Ignore, 0));
+                queue.Enqueue(new TestData(method.Name, "Ignored", property.Ignore, 0));
                 return;
             }
 
             var instance = Activator.CreateInstance(type);
 
-            var exceptionBefore = this.AfterOrBeforeTest(instance, this.methods.Before);
+            var exceptionBefore = this.TryToExecuteAfterOrBeforeTest(instance, this.methods.Before);
             if (exceptionBefore != null)
             {
-                queue.Enqueue(new TestInfo(method.Name, "Failed", exceptionBefore, 0));
+                queue.Enqueue(new TestData(method.Name, "Failed", exceptionBefore, 0));
                 return;
             }
 
@@ -120,11 +131,11 @@ namespace HW5T1
                 stopWatch.Stop();
                 if (e.InnerException.GetType() == property.Expected)
                 {
-                    queue.Enqueue(new TestInfo(method.Name, "Success", e.Message, stopWatch.ElapsedMilliseconds));
+                    queue.Enqueue(new TestData(method.Name, "Success", e.Message, stopWatch.ElapsedMilliseconds));
                 }
                 else
                 {
-                    queue.Enqueue(new TestInfo(method.Name, "Failed", e.Message, stopWatch.ElapsedMilliseconds));
+                    queue.Enqueue(new TestData(method.Name, "Failed", e.Message, stopWatch.ElapsedMilliseconds));
                 }
 
                 return;
@@ -132,77 +143,22 @@ namespace HW5T1
 
             if (property.Expected != null)
             {
-                queue.Enqueue(new TestInfo(method.Name, "Failed", 
+                queue.Enqueue(new TestData(method.Name, "Failed", 
                     $"Test did not throw an exception: {property.Expected.ToString()}", stopWatch.ElapsedMilliseconds));
                 return;
             }
 
-            var exceptionAfter = this.AfterOrBeforeTest(instance, methods.After);
+            var exceptionAfter = this.TryToExecuteAfterOrBeforeTest(instance, methods.After);
             if (exceptionAfter != null)
             {
-                queue.Enqueue(new TestInfo(method.Name, "Failed", exceptionAfter, 0));
+                queue.Enqueue(new TestData(method.Name, "Failed", exceptionAfter, 0));
                 return;
             }
 
-            queue.Enqueue(new TestInfo(method.Name, "Success", null, stopWatch.ElapsedMilliseconds));
+            queue.Enqueue(new TestData(method.Name, "Success", null, stopWatch.ElapsedMilliseconds));
         }
 
-        private void DistributeMethodsByAttributes(Type type)
-        {
-            methods = new SetOfMethods();
-
-            foreach (var method in type.GetMethods())
-            {
-                foreach (var attribute in Attribute.GetCustomAttributes(method))
-                {
-                    this.ValidationOfTestForCorrectness(method, attribute);
-
-                    if (attribute.GetType() == typeof(Before))
-                    {
-                        this.methods.Before.Add(method);
-                    }
-                    if (attribute.GetType() == typeof(After))
-                    {
-                        this.methods.After.Add(method);
-                    }
-                    if (attribute.GetType() == typeof(BeforeClass))
-                    {
-                        this.methods.BeforeClass.Add(method);
-                    }
-                    if (attribute.GetType() == typeof(AfterClass))
-                    {
-                        this.methods.AfterClass.Add(method);
-                    }
-                    if (attribute.GetType() == typeof(Test))
-                    {
-                        this.methods.Tests.Add(method);
-                    }
-                }
-            }
-        }
-
-        private void ValidationOfTestForCorrectness(MethodInfo test, Attribute attribute)
-        {
-            var attributeName = attribute.GetType().Name;
-
-            if (attributeName == typeof(After).Name || attributeName == typeof(Before).Name || attributeName == typeof(Test).Name)
-            {
-                if (test.ReturnType.Name != "Void" || test.GetParameters().Length > 0 || test.IsStatic)
-                {
-                    throw new Exception($"Incorrect declaration of {test.Name}");
-                }
-            }
-
-            if (attributeName == typeof(AfterClass).Name || attributeName == typeof(BeforeClass).Name)
-            {
-                if (!test.IsStatic)
-                {
-                    throw new Exception("Methods with this attributes should be static");
-                }
-            }
-        }
-
-        private string AfterOrBeforeTest(object instance, List<MethodInfo> methods)
+        private string TryToExecuteAfterOrBeforeTest(object instance, List<MethodInfo> methods)
         {
             foreach (var method in methods)
             {
@@ -218,7 +174,7 @@ namespace HW5T1
             return null;
         }
 
-        private bool BeforeClassOrAfterClassTest(ConcurrentQueue<TestInfo> testInfo, List<MethodInfo> methods)
+        private bool TryToExecuteBeforeClassOrAfterClassTest(ConcurrentQueue<TestData> testInfo, List<MethodInfo> methods)
         {
             foreach (var method in methods)
             {
@@ -230,7 +186,7 @@ namespace HW5T1
                 {
                     foreach (var test in this.methods.Tests)
                     {
-                        testInfo.Enqueue(new TestInfo(test.Name, "failed", e.Message, 0));
+                        testInfo.Enqueue(new TestData(test.Name, "failed", e.Message, 0));
                     }
 
                     return false;
@@ -246,9 +202,15 @@ namespace HW5T1
         public void DisplayResults()
         {
 
-            while (!this.ClassQueue.IsEmpty)
+            Console.WriteLine("ERRORS:");
+            foreach (var error in this.declarationErrors)
             {
-                this.ClassQueue.TryDequeue(out var information);
+                Console.WriteLine(error);
+            }
+
+            while (!this.GeneralSet.IsEmpty)
+            {
+                this.GeneralSet.TryDequeue(out var information);
                 var result = information.ToArray();
                 foreach (var item in result)
                 {
