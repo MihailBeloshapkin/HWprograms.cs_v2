@@ -158,6 +158,43 @@ namespace HW5T1
             queue.Enqueue(new TestData(method.Name, "Success", null, stopWatch.ElapsedMilliseconds));
         }
 
+        /// <summary>
+        /// Display result of test execution to a console.
+        /// </summary>
+        public void DisplayResults()
+        {
+            if (this.declarationErrors.Count != 0)
+            {
+                Console.WriteLine("ERRORS:");
+                foreach (var error in this.declarationErrors)
+                {
+                    Console.WriteLine(error);
+                }
+            }
+
+            while (!this.GeneralSet.IsEmpty)
+            {
+                this.GeneralSet.TryDequeue(out var information);
+                var result = information.ToArray();
+                foreach (var item in result)
+                {
+                    Console.WriteLine($"Test name: {item.Name}");
+                    Console.WriteLine($"Result: {item.Result}");
+                    Console.Write("Ignore reason:");
+                    if (item.WhyIgnored != null)
+                    {
+                        Console.Write($"{item.WhyIgnored}");
+                    }
+                    else
+                    {
+                        Console.Write("None");
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine($"Time of execution: {item.TimeOfExecution}");
+                }
+            }
+        }
+
         private string TryToExecuteAfterOrBeforeTest(object instance, List<MethodInfo> methods)
         {
             foreach (var method in methods)
@@ -194,41 +231,6 @@ namespace HW5T1
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Display result of test execution to a console.
-        /// </summary>
-        public void DisplayResults()
-        {
-
-            Console.WriteLine("ERRORS:");
-            foreach (var error in this.declarationErrors)
-            {
-                Console.WriteLine(error);
-            }
-
-            while (!this.GeneralSet.IsEmpty)
-            {
-                this.GeneralSet.TryDequeue(out var information);
-                var result = information.ToArray();
-                foreach (var item in result)
-                {
-                    Console.WriteLine($"Test name: {item.Name}");
-                    Console.WriteLine($"Result: {item.Result}");
-                    Console.Write("Ignore reason:");
-                    if (item.WhyIgnored != null)
-                    {
-                        Console.Write($"{item.WhyIgnored}");
-                    }
-                    else
-                    {
-                        Console.Write("None");
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine($"Time of execution: {item.TimeOfExecution}");
-                }
-            }
         }
     }
 }
