@@ -14,10 +14,10 @@ namespace HW5T1
 
         public long TimeOfExecution { get; private set; }
 
-        public TestInfo(string name, string resut, string whyIgnored, long timeOfExecution)
+        public TestInfo(string name, string result, string whyIgnored, long timeOfExecution)
         {
             this.Name = name;
-            this.Result = Result;
+            this.Result = result;
             this.WhyIgnored = whyIgnored;
             this.TimeOfExecution = timeOfExecution;
         }

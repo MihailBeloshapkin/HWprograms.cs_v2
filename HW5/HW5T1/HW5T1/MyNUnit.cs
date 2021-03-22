@@ -39,7 +39,7 @@ namespace HW5T1
             var assemblies = new ConcurrentQueue<Assembly>();
             Parallel.ForEach(files, x => assemblies.Enqueue(Assembly.LoadFrom(x)));
             var classes = assemblies.Distinct().SelectMany(x => x.ExportedTypes).Where(y => y.IsClass);
-            var types = classes.Where(c => c.GetMethods().Any(m => m.GetCustomAttributes().Any(t => t is TestAttribute)));
+            var types = classes.Where(c => c.GetMethods().Any(m => m.GetCustomAttributes().Any(t => t is Test)));
             this.ClassQueue = new ConcurrentQueue<ConcurrentQueue<TestInfo>>();
             
             Parallel.ForEach(types, (type) => 
@@ -76,7 +76,7 @@ namespace HW5T1
         /// <param name="queue"></param>
         private void RunTest(Type type, MethodInfo method, ConcurrentQueue<TestInfo> queue)
         {
-            var property = (TestAttribute)Attribute.GetCustomAttribute(method, typeof(TestAttribute));
+            var property = (Test)Attribute.GetCustomAttribute(method, typeof(Test));
             if (property.Ignore != null)
             {
                 queue.Enqueue(new TestInfo(method.Name, "Ignored", property.Ignore, 0));
@@ -159,7 +159,7 @@ namespace HW5T1
                     {
                         this.methods.AfterClass.Add(method);
                     }
-                    if (attribute.GetType() == typeof(TestAttribute))
+                    if (attribute.GetType() == typeof(Test))
                     {
                         this.methods.Tests.Add(method);
                     }
@@ -171,7 +171,7 @@ namespace HW5T1
         {
             var attributeName = attribute.GetType().Name;
 
-            if (attributeName == typeof(After).Name || attributeName == typeof(Before).Name || attributeName == typeof(TestAttribute).Name)
+            if (attributeName == typeof(After).Name || attributeName == typeof(Before).Name || attributeName == typeof(Test).Name)
             {
                 if (test.ReturnType.Name != "Void" || test.GetParameters().Length > 0 || test.IsStatic)
                 {

@@ -3,7 +3,7 @@
 namespace Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class TestAttribute : Attribute
+    public class Test : Attribute
     {
         public Type Expected { get; set; }
 

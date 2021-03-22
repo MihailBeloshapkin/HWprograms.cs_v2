@@ -5,7 +5,7 @@ namespace SuccessTests
 {
     public class SuccessTests
     {
-        [TestAttribute]
+        [Test]
         public void BeforeClass()
         {
             int number = 30;
