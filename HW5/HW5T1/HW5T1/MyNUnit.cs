@@ -93,7 +93,6 @@ namespace HW5T1
             }
 
             var stopWatch = new Stopwatch();
-            var result = "Success";
 
             try
             {
