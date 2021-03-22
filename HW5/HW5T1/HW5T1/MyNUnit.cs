@@ -19,13 +19,29 @@ namespace HW5T1
     {
         private SetOfMethods methods;
 
-        private ConcurrentQueue<ConcurrentQueue<TestInfo>> ClassQueue;
+        public ConcurrentQueue<ConcurrentQueue<TestInfo>> ClassQueue { get; private set; }
 
         private readonly string pathToAssemblies;
 
         public MyNUnit(string pathToAssemblies)
         {
             this.pathToAssemblies = pathToAssemblies;
+        }
+
+        public List<TestInfo> GetAllData()
+        {
+            var allData = new List<TestInfo>();
+            while (!this.ClassQueue.IsEmpty)
+            {
+                this.ClassQueue.TryDequeue(out var information);
+                while (!information.IsEmpty)
+                {
+                    information.TryDequeue(out var data);
+                    allData.Add(data);
+                }
+            }
+
+            return allData;
         }
 
         public void Execute()
@@ -39,7 +55,7 @@ namespace HW5T1
             var assemblies = new ConcurrentQueue<Assembly>();
             Parallel.ForEach(files, x => assemblies.Enqueue(Assembly.LoadFrom(x)));
             var classes = assemblies.Distinct().SelectMany(x => x.ExportedTypes).Where(y => y.IsClass);
-            var types = classes.Where(c => c.GetMethods().Any(m => m.GetCustomAttributes().Any(t => t is Test)));
+            var types = classes.Where(x => x.GetMethods().Any(y => y.GetCustomAttributes().Any(z => z is Test)));
             this.ClassQueue = new ConcurrentQueue<ConcurrentQueue<TestInfo>>();
             
             Parallel.ForEach(types, (type) => 
@@ -65,7 +81,6 @@ namespace HW5T1
                 this.ClassQueue.Enqueue(currentQueue);
             });
 
-            this.DisplayResults();
         }
 
         /// <summary>
@@ -228,8 +243,9 @@ namespace HW5T1
         /// <summary>
         /// Display result of test execution to a console.
         /// </summary>
-        private void DisplayResults()
+        public void DisplayResults()
         {
+
             while (!this.ClassQueue.IsEmpty)
             {
                 this.ClassQueue.TryDequeue(out var information);

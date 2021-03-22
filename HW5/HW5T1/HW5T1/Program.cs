@@ -12,6 +12,7 @@ namespace HW5T1
             {
                 var nunit = new MyNUnit("../../../../SuccessTests");
                 nunit.Execute();
+                nunit.DisplayResults();
             }
             catch (Exception e)
             {

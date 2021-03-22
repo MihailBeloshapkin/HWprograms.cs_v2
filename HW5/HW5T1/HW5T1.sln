@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attributes", "Atributes\Att
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuccessTests", "SuccessTests\SuccessTests.csproj", "{ED3A70AA-EAD7-4BDF-881B-B3B8D630F38F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW5T1Tests", "HW5T1Tests\HW5T1Tests.csproj", "{A1FAEF3D-0058-4DEE-8D6C-529853CF0B58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{ED3A70AA-EAD7-4BDF-881B-B3B8D630F38F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED3A70AA-EAD7-4BDF-881B-B3B8D630F38F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED3A70AA-EAD7-4BDF-881B-B3B8D630F38F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1FAEF3D-0058-4DEE-8D6C-529853CF0B58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1FAEF3D-0058-4DEE-8D6C-529853CF0B58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1FAEF3D-0058-4DEE-8D6C-529853CF0B58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1FAEF3D-0058-4DEE-8D6C-529853CF0B58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,7 @@ namespace SuccessTests
     public class SuccessTests
     {
         [Test]
-        public void BeforeClass()
+        public void RandomTest()
         {
             int number = 30;
             number += 239;

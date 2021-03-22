@@ -8,6 +8,9 @@ namespace HW5T1
     // This class contains the set of methods.
     public class SetOfMethods
     {
+        /// <summary>
+        /// Before List
+        /// </summary>
         public List<MethodInfo> Before { get; set; } = new List<MethodInfo>();
 
         public List<MethodInfo> After { get; set; } = new List<MethodInfo>();
