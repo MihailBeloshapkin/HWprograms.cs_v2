@@ -4,27 +4,24 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-
-namespace Client
+namespace HW4T1
 {
-
-    // This class contains ftp client methods.
-    public class Client : IDisposable
+    public class Client :IDisposable    
     {
         private readonly StreamReader reader;
         private readonly StreamWriter writer;
         private readonly TcpClient tcpClient;
         private readonly Stream stream;
 
-        public Client(int port, string hostName)
+        public Client(string host, int port)
         {
-            this.tcpClient = new TcpClient(hostName, port);
+            this.tcpClient = new TcpClient(host, port);
             this.stream = tcpClient.GetStream();
             this.writer = new StreamWriter(stream) { AutoFlush = true };
             this.reader = new StreamReader(stream);
         }
 
-        
+
         public async Task<IEnumerable<(string name, bool isDir)>> List(string path)
         {
             await writer.WriteLineAsync($"1{path}");
@@ -86,6 +83,9 @@ namespace Client
         {
             writer.Dispose();
             reader.Dispose();
+            stream.Dispose();
+            tcpClient.Dispose();
         }
     }
 }
+

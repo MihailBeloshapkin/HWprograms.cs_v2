@@ -2,31 +2,54 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
-using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.IO;
 
-namespace Server
+namespace HW4T1
 {
-    // This class contains methods for ftp server.
     public class Server
     {
         private readonly TcpListener listener;
 
-        public Server(IPAddress localAddress, int port)
+        public Server(string host, int port)
         {
-            this.listener = new TcpListener(localAddress, port);
-            this.listener.Start();
+            this.listener = new TcpListener(IPAddress.Parse(host), port);
+            
         }
 
         public async Task Run()
         {
+            this.listener.Start();
+
             while (true)
             {
-                var socket = await listener.AcceptSocketAsync();
-                
+                var client = await listener.AcceptTcpClientAsync();
+                await Task.Run(() => this.ProcessRequests(client));
             }
         }
+
+        private async Task ProcessRequests(TcpClient client)
+        {
+            using var stream = client.GetStream();
+            var reader = new StreamReader(stream);
+            var writer = new StreamWriter(stream) { AutoFlush = true };
+            var request = await reader.ReadLineAsync();
+            var (command, path) = this.ParseData(request);
+
+            switch (command)
+            {
+                case "1":
+                    await this.List(path, writer);
+                    break;
+                case "2":
+                    await this.Get(path, writer);
+                    break;
+            }
+        }
+
+        private (string, string) ParseData(string request) => (request.Split()[0], request.Split()[1]);
 
         /// <summary>
         /// Listing
@@ -70,6 +93,5 @@ namespace Server
             await fileStream.CopyToAsync(writer.BaseStream);
             await writer.WriteLineAsync();
         }
-
     }
 }

@@ -6,10 +6,8 @@ namespace HW4T1
     {
         static void Main(string[] args)
         {
-            for (int iter = 0; iter < 100; iter++)
-            {
-                Console.WriteLine("MM");
-            }
+            var server = new Server("127.0.0.1", 8888);
+            var client = new Client("127.0.0.1", 8888);
         }
     }
 }
