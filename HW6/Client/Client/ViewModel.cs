@@ -25,6 +25,8 @@ namespace Gui
         public string pathToSaveFiles;
         private Stack<string> openFolder = new Stack<string>();
 
+        private Stack<ObservableCollection<String>> history = new Stack<ObservableCollection<string>>();
+
         public ObservableCollection<string> DownloadingFiles { get; set; } = new ObservableCollection<string>();
 
         public ObservableCollection<string> DownloadedFiles { get; set; } = new ObservableCollection<string>();
@@ -95,6 +97,50 @@ namespace Gui
             ShowCurrentFoldersAndFilesAsync(serverPath);
         }
 
+        public async void UpdateList(string path)
+        {
+            ClearFileList();
+            var updatedData = await this.client.List(path);
+            foreach (var item in updatedData)
+            {
+                this.DirectoriesAndFiles.Add(item.Item1);
+            }
+            this.history.Clear();
+            this.history.Push(this.DirectoriesAndFiles);
+        }
+
+        public async void GetIntoFolder(string path)
+        {
+            try
+            {
+                var data = await this.client.List(path);
+                var arch = new ObservableCollection<string>();
+                foreach (var item in this.DirectoriesAndFiles)
+                {
+                    arch.Add(item);
+                }
+                this.history.Push(arch);
+                this.DirectoriesAndFiles.Clear();
+                foreach (var item in data)
+                {
+                    this.DirectoriesAndFiles.Add(item.Item1);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Impossible operation");
+            }
+        }
+
+        public void Back()
+        {
+            this.DirectoriesAndFiles.Clear();
+            foreach (var item in this.history.Pop())
+            {
+                this.DirectoriesAndFiles.Add(item);
+            }
+        }
+
         private async void ShowCurrentFoldersAndFilesAsync(string path)
         {
             ClearFileList();
@@ -116,6 +162,7 @@ namespace Gui
                 DirectoriesAndFiles.Add(item.Item1);
                 IsDirectory.Add(item.Item2);
             }
+            
         }
 
         private void ClearFileList()

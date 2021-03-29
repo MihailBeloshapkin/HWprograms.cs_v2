@@ -31,8 +31,29 @@ namespace Gui
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            this.viewModel.serverPath = this.DownloadPath.Text;
+            this.viewModel.serverPath = showContent.Text;
             viewModel.Connection(this.textBoxIP.Text, this.textBoxPort.Text);
+        }
+
+        private void Download_Click(object sender, RoutedEventArgs e)
+        {
+            _ = viewModel.DownloadFile(this.DownloadPath.Text);
+        }
+
+        private void Show_Click(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.UpdateList(showContent.Text);
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.Back();
+        }
+
+        private void GetIntoFolder(object sender, MouseButtonEventArgs e)
+        {
+            var selected = dataBox.SelectedItem.ToString();
+            this.viewModel.GetIntoFolder(selected);
         }
     }
 }
