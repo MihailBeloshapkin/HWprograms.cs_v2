@@ -83,7 +83,7 @@ namespace Gui
         /// </summary>
         /// <param name="path">Path to the file.</param>
         /// <returns><size: Int> (<name: String> <isDir: Boolean>)</returns>
-        public async Task<(int, List<(string, bool)>)> List(string path)
+        public async Task<List<(string, bool)>> List(string path)
         {
             var client = new TcpClient(host, port);
             using var stream = client.GetStream();
@@ -105,10 +105,11 @@ namespace Gui
             for (int iter = 0; iter * 2 + 2 < responceSplit.Length; iter++)
             {
                 var fullPath = responceSplit[iter * 2 + 1];
+             //   var isDir = responceSplit[iter * 2 + 2];
                 var isDir = Convert.ToBoolean(responceSplit[iter * 2 + 2]);
                 result.Add((fullPath, isDir));
             }
-            return (size, result);
+            return result;
         }
 
 

@@ -111,7 +111,7 @@ namespace Gui
                 openFolder.Push(currentServerPath);
             }
             currentServerPath = path;
-            foreach (var item in foldersAndFiles.Item2)
+            foreach (var item in foldersAndFiles)
             {
                 DirectoriesAndFiles.Add(item.Item1);
                 IsDirectory.Add(item.Item2);

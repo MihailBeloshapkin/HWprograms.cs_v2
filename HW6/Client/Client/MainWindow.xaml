@@ -13,7 +13,9 @@
         <Style TargetType="Button">
             <Setter Property="Margin" Value="15"/>
         </Style>
-
+        <Style TargetType="ListBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
     </Window.Resources>
     <TabControl>
         <TabItem Header="Main">
@@ -28,8 +30,10 @@
                     <RowDefinition Height="30*"/>
                     <RowDefinition Height="30*"/>
                     <RowDefinition Height="100*"/>
-                    <RowDefinition Height="100*"/>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="80*"/>
                 </Grid.RowDefinitions>
+                
                 <StackPanel Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2">
                     <Label Content="IP:"/>
                     <TextBox x:Name="textBoxIP" MinWidth="200" Text="{Binding Path=Ip, Mode=TwoWay}"/>
@@ -39,10 +43,12 @@
                     <TextBox x:Name="textBoxPort" MinWidth="200" Text="{Binding Path=Port, Mode=TwoWay}"/>
                 </StackPanel>
                 <Button x:Name="Connect" Content="connect" Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" Click="Connect_Click" />
-                <StackPanel Grid.Column="0" Margin="0,51,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                    <Label Content="Download folder"/>
-                    <TextBox MinWidth="200" x:Name="DownloadPath" Text="{Binding Path=PathToDownload, Mode=TwoWay}"/>
-                </StackPanel>
+                <TextBox Grid.Row="3" Grid.Column="0" MinWidth="200" x:Name="DownloadPath" Text="{Binding Path=PathToDownload, Mode=TwoWay}"/>
+                <ListBox x:Name="dataBox" Grid.Row="0" Grid.Column="0" 
+                         Grid.ColumnSpan="2" Grid.RowSpan="3" 
+                         
+                         ItemsSource="{Binding Path=DirectoriesAndFiles, Mode=OneWay}"
+                         />
             </Grid>
         </TabItem>
     </TabControl>

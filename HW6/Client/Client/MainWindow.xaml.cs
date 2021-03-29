@@ -26,6 +26,7 @@ namespace Gui
         {
             InitializeComponent();
             this.viewModel = new ViewModel();
+            dataBox.ItemsSource = viewModel.DirectoriesAndFiles;
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
