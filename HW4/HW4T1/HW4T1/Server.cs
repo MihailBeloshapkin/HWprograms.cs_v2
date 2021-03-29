@@ -8,21 +8,14 @@ using System.Threading.Tasks;
 namespace HW4T1
 {
     /// <summary>
-    /// FTP server.
+    /// Server.
     /// </summary>
     public class Server
     {
-    //    private int port;
         private TcpListener listener;
         
-        /// <summary>
-        /// Server constructor
-        /// </summary>
-        /// <param name="host">host name</param>
-        /// <param name="port">port name</param>
         public Server(string host, int port)
         {
-        //    this.port = port;
             this.listener = new TcpListener(IPAddress.Parse(host), port);
             listener.Start();
         }
@@ -40,14 +33,8 @@ namespace HW4T1
         }
 
         /// <summary>
-        /// Stop the server.
+        /// Run the server.
         /// </summary>
-        public void ShutDown() => listener.Stop();
-
-        /// <summary>
-        /// Server process
-        /// </summary>
-        /// <param name="client">Tcp client</param>
         private async Task Run(TcpClient client)
         {
             using var stream = client.GetStream();
@@ -55,7 +42,7 @@ namespace HW4T1
             var reader = new StreamReader(stream);
             var writer = new StreamWriter(stream) { AutoFlush = true };
             var data = await reader.ReadLineAsync();
-            var (command, path) = ParseData(data);
+            var (command, path) = this.GetCommandAndPath(data);
 
             switch (command)
             {
@@ -73,18 +60,13 @@ namespace HW4T1
         }
 
         /// <summary>
-        /// Data parsing.
+        /// Parse request.
         /// </summary>
-        /// <param name="data">String with command and path</param>
-        /// <returns>Command and path</returns>
-        private (string, string) ParseData(string data) => (data.Split()[0], data.Split()[1]);
+        private (string, string) GetCommandAndPath(string data) => (data.Split()[0], data.Split()[1]);
 
         /// <summary>
-        /// Comand list.
+        /// Listing files and folders from the path.
         /// </summary>
-        /// <param name="path">Path to the file</param>
-        /// <param name="writer">Stream writer</param>
-        /// <returns><size: Int> (<name: String> <isDir: Boolean>)</returns>
         private async Task List(string path, StreamWriter writer)
         {
             if (!Directory.Exists(path))
@@ -95,8 +77,7 @@ namespace HW4T1
 
             var files = Directory.GetFiles(path);
             var directories = Directory.GetDirectories(path);
-            //    await writer.WriteLineAsync(Convert.ToString(directories.Length + files.Length));
-
+            
             var responce = (directories.Length + files.Length).ToString();
 
             foreach (var file in files)
@@ -115,11 +96,8 @@ namespace HW4T1
         }
 
         /// <summary>
-        /// Comand get.
+        /// Get file from the path. 
         /// </summary>
-        /// <param name="path">Path to the file.</param>
-        /// <param name="writer">Stream writer</param>
-        /// <returns><size: Long> <content: Bytes></returns>
         private async Task Get(string path, StreamWriter writer)
         {
             if (!File.Exists(path))

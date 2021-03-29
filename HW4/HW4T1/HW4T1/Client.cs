@@ -7,38 +7,23 @@ using System.Threading.Tasks;
 namespace HW4T1
 {
     /// <summary>
-    /// Simple client
+    /// Client
     /// </summary>
     public class Client
     {
-        private int port;
-        private string host;
-    //    private readonly TcpClient client;
-    //    private readonly Stream stream;
-    //    private readonly StreamReader reader;
-    //    private readonly StreamWriter writer;
+        private readonly int port;
+        private readonly string host;
 
-        /// <summary>
-        /// Client constructor.
-        /// </summary>
-        /// <param name="host">Host name</param>
-        /// <param name="port">Port name</param>
         public Client(string host, int port)
         {
             this.host = host;
             this.port = port;
-        //    this.client = new TcpClient(host, port);
-        //    this.stream = client.GetStream();
-        //    this.reader = new StreamReader(stream);
-        //    this.writer = new StreamWriter(stream) { AutoFlush = true };
         }
 
         /// <summary>
-        /// Requests file downloading from the server.
+        /// Get the file from the path.
         /// </summary>
-        /// <param name="path">Path to the file.</param>
-        /// <returns><size: Long> <content: Bytes></returns>
-        public async Task Get(string path, string destination, string fileName)
+        public async Task Get(string path, string destination)
         {
             var client = new TcpClient(host, port);
             var stream = client.GetStream();
@@ -59,45 +44,27 @@ namespace HW4T1
                 await reader.ReadAsync(size, index, 1);
             }
 
-            var size_long = long.Parse(size);
+            var sizeLong = long.Parse(size);
             string directoryPath = $@"{Directory.GetCurrentDirectory()}\{destination}";
             Directory.CreateDirectory(directoryPath);
+            var fileName = Path.GetFileName(path);
             using var fileStream = File.Create($@"{directoryPath}\{fileName}");
 
             const int maxBufferSize = 81920;
             var buffer = new byte[maxBufferSize];
-            while (size_long > 0)
+            while (sizeLong > 0)
             {
-                var currentBufferSize = size_long > maxBufferSize ? maxBufferSize : (int)size_long;
+                var currentBufferSize = sizeLong > maxBufferSize ? maxBufferSize : (int)sizeLong;
                 await stream.ReadAsync(buffer, 0, currentBufferSize);
                 await fileStream.WriteAsync(buffer, 0, currentBufferSize);
-                size_long -= maxBufferSize;
+                sizeLong -= maxBufferSize;
             }
             await reader.ReadLineAsync();
         }
         
-        private async Task Download(long size, string destinationPath, string fileName, Stream stream, StreamReader reader)
-        {
-            string directoryPath = $@"{Directory.GetCurrentDirectory()}\{destinationPath}";
-            Directory.CreateDirectory(directoryPath);
-            using var fileStream = File.Create($@"{directoryPath}\{fileName}");
-
-            const int maxBufferSize = 81920;
-            var buffer = new byte[maxBufferSize];
-            while (size > 0)
-            {
-                var currentBufferSize = size > maxBufferSize ? maxBufferSize : (int)size;
-                await stream.ReadAsync(buffer, 0, currentBufferSize);
-                await fileStream.WriteAsync(buffer, 0, currentBufferSize);
-                size -= maxBufferSize;
-            }
-            await reader.ReadLineAsync();
-        }
         /// <summary>
-        /// Requests list of files in server's directory
+        /// Get list of directories and files in the path.
         /// </summary>
-        /// <param name="path">Path to the file.</param>
-        /// <returns><size: Int> (<name: String> <isDir: Boolean>)</returns>
         public async Task<(int, List<(string, bool)>)> List(string path)
         {
             var client = new TcpClient(host, port);
