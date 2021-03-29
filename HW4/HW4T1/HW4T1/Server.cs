@@ -38,7 +38,6 @@ namespace HW4T1
         private async Task Run(TcpClient client)
         {
             using var stream = client.GetStream();
-
             var reader = new StreamReader(stream);
             var writer = new StreamWriter(stream) { AutoFlush = true };
             var data = await reader.ReadLineAsync();
@@ -49,11 +48,9 @@ namespace HW4T1
                 case "1":
                     await this.List(path, writer);
                     break;
-
                 case "2":
                     await this.Get(path, writer);
                     break;
-
                 default:
                     throw new ArgumentException("Incorrect request!");
             }
