@@ -55,14 +55,9 @@ namespace HW4T1
                     break;
 
                 default:
-                    throw new ArgumentException("Command error.");
+                    throw new ArgumentException("Incorrect request!");
             }
         }
-
-        /// <summary>
-        /// Parse request.
-        /// </summary>
-        private (string, string) GetCommandAndPath(string data) => (data.Split()[0], data.Split()[1]);
 
         /// <summary>
         /// Listing files and folders from the path.
@@ -110,5 +105,11 @@ namespace HW4T1
             await fileStream.CopyToAsync(writer.BaseStream);
             await writer.WriteLineAsync();
         }
+
+        /// <summary>
+        /// Parse request.
+        /// </summary>
+        private (string, string) GetCommandAndPath(string data) 
+            => (data.Split(' ')[0], data.Split(' ')[1]);
     }
 }
