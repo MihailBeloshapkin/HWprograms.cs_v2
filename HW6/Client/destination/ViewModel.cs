@@ -96,7 +96,6 @@ namespace Gui
             catch (Exception)
             {
                 MessageBox.Show("Connection failed");
-                return;
             }
             _ = server.Process();
             ShowCurrentFoldersAndFilesAsync(serverPath);

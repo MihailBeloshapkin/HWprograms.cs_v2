@@ -51,7 +51,7 @@
                 <Button x:Name="Connect" Content="connect" Grid.Column="4" Grid.Row="0" Grid.RowSpan="2" Click="Connect_Click" Margin="14,15,15,15" />
                 <Button x:Name="Show" Content="Show data" Grid.Column="4" Grid.Row="2" Click="Show_Click" Margin="14,15,15,15"/>
                 <Button x:Name="Back" Content="Back" Grid.Column="3" Grid.Row="3" 
-                        Click="Back_Click" Margin="15,15,16,15" Visibility="Visible"/>
+                        Click="Back_Click" Margin="15,15,16,15" Visibility="Hidden"/>
                 <ListBox x:Name="dataBox" Grid.Row="0" Grid.Column="0"
                          Grid.RowSpan="4" Grid.ColumnSpan="3" Margin="19,19,19,19"
                          ItemsSource="{Binding Path=DirectoriesAndFiles, Mode=OneWay}"

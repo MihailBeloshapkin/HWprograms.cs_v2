@@ -55,6 +55,7 @@ namespace Gui
         {
             var selected = dataBox.SelectedItem.ToString();
             this.viewModel.GetIntoFolder(selected);
+            this.Back.Visibility = Visibility;
         }
 
         private void Download_All_Click(object sender, RoutedEventArgs e)
