@@ -15,11 +15,6 @@ namespace Gui
         private int port;
         private string host;
         
-        /// <summary>
-        /// Client constructor.
-        /// </summary>
-        /// <param name="host">Host name</param>
-        /// <param name="port">Port name</param>
         public Client(string host, int port)
         {
             this.host = host;
