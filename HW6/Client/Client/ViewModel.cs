@@ -26,17 +26,12 @@ namespace Gui
         private Stack<string> openFolder = new Stack<string>();
 
         private Stack<ObservableCollection<String>> history = new Stack<ObservableCollection<string>>();
+
+        /// <summary>
+        /// Contains info about names of downloaded files and their status.
+        /// </summary>
         public ObservableCollection<string> Downloads { get; set; } = new ObservableCollection<string>();
-
-
-        public ObservableCollection<string> DownloadingFiles { get; set; } = new ObservableCollection<string>();
-
-        public ObservableCollection<string> DownloadedFiles { get; set; } = new ObservableCollection<string>();
-
         public ObservableCollection<string> DirectoriesAndFiles { get; set; } = new ObservableCollection<string>();
-
-        public ObservableCollection<bool> IsDirectory { get; set; } = new ObservableCollection<bool>();
-
 
 
         public string Ip
@@ -99,12 +94,12 @@ namespace Gui
                 return;
             }
             _ = server.Process();
-            ShowCurrentFoldersAndFilesAsync(serverPath);
+            UpdateList(serverPath);
         }
 
         public async void UpdateList(string path)
         {
-            ClearFileList();
+            this.DirectoriesAndFiles.Clear();
             if (path == "")
             {
                 MessageBox.Show("Input path!");
@@ -157,41 +152,6 @@ namespace Gui
                 MessageBox.Show("Impossible operation");
             }
             
-        }
-
-        private async void ShowCurrentFoldersAndFilesAsync(string path)
-        {
-            ClearFileList();
-            if (path == "..")
-            {
-                ShowCurrentFoldersAndFilesAsync(openFolder.Pop());
-                return;
-            }
-            var foldersAndFiles = await client.List(path);
-            if (path != serverPath)
-            {
-                DirectoriesAndFiles.Add("..");
-                IsDirectory.Add(true);
-                openFolder.Push(currentServerPath);
-            }
-            currentServerPath = path;
-            foreach (var item in foldersAndFiles)
-            {
-                DirectoriesAndFiles.Add(item.Item1);
-                IsDirectory.Add(item.Item2);
-            }
-            
-        }
-
-        private void ClearFileList()
-        {
-            IsDirectory.Clear();
-            DirectoriesAndFiles.Clear();
-        }
-
-        public void EditListBox(string path)
-        {
-            ShowCurrentFoldersAndFilesAsync(path);
         }
 
         public async Task DownloadFile(string downloadFrom, string downloadTo)
