@@ -26,14 +26,14 @@ namespace Gui
         {
             InitializeComponent();
             this.viewModel = new ViewModel();
-            dataBox.ItemsSource = viewModel.DirectoriesAndFiles;
+            dataBox.ItemsSource = viewModel.AllData;
             Downloading.ItemsSource = viewModel.Downloads;
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             this.viewModel.serverPath = showContent.Text;
-            viewModel.Connection(this.textBoxIP.Text, this.textBoxPort.Text);
+            viewModel.EstablishConnection(this.infoIP.Text, this.infoPort.Text);
         }
 
         private void Download_Click(object sender, RoutedEventArgs e)

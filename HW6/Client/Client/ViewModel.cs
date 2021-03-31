@@ -11,27 +11,29 @@ using HW6T1;
 
 namespace Gui
 {
-    public class ViewModel //: INotifyPropertyChanged
+    public class ViewModel : INotifyPropertyChanged
     {
-        private static string defaultIP = "127.0.0.1";
-        private static int defaultPort = 8888;
-        private string ip = defaultIP;
-        private int port = defaultPort;
+        private string ip = "127.0.0.1";
+        private int port = 8888;
         private Server server;
         private Client client;
         public event PropertyChangedEventHandler PropertyChanged;
         public string serverPath;
-        public string currentServerPath;
-        public string pathToSaveFiles;
-        private Stack<string> openFolder = new Stack<string>();
 
+        /// <summary>
+        /// Previous files and folders.
+        /// </summary>
         private Stack<ObservableCollection<String>> history = new Stack<ObservableCollection<string>>();
 
         /// <summary>
         /// Contains info about names of downloaded files and their status.
         /// </summary>
         public ObservableCollection<string> Downloads { get; set; } = new ObservableCollection<string>();
-        public ObservableCollection<string> DirectoriesAndFiles { get; set; } = new ObservableCollection<string>();
+        
+        /// <summary>
+        /// Contaion all files and folders.
+        /// </summary>
+        public ObservableCollection<string> AllData { get; set; } = new ObservableCollection<string>();
 
 
         public string Ip
@@ -55,19 +57,6 @@ namespace Gui
         
         }
 
-        private static string defaultPathToDownLoad;
-        private string pathToDownload = defaultPathToDownLoad;
-
-        public string PathToDownload
-        {
-            get => this.pathToDownload;
-            set
-            {
-                pathToDownload = value;
-                OnPropertyChanged("PathToDownload");
-            }
-        }
-
         public ViewModel()
         {
 
@@ -81,7 +70,7 @@ namespace Gui
             }
         }
 
-        public void Connection(string ip, string port)
+        public void EstablishConnection(string ip, string port)
         {
             try
             {
@@ -97,9 +86,12 @@ namespace Gui
             UpdateList(serverPath);
         }
 
+        /// <summary>
+        /// Update list of files and folders.
+        /// </summary>
         public async void UpdateList(string path)
         {
-            this.DirectoriesAndFiles.Clear();
+            this.AllData.Clear();
             if (path == "")
             {
                 MessageBox.Show("Input path!");
@@ -108,27 +100,30 @@ namespace Gui
             var updatedData = await this.client.List(path);
             foreach (var item in updatedData)
             {
-                this.DirectoriesAndFiles.Add(item.Item1);
+                this.AllData.Add(item.Item1);
             }
             this.history.Clear();
-            this.history.Push(this.DirectoriesAndFiles);
+            this.history.Push(this.AllData);
         }
 
+        /// <summary>
+        /// Simple file system navigation. 
+        /// </summary>
         public async void GetIntoFolder(string path)
         {
             try
             {
                 var data = await this.client.List(path);
                 var arch = new ObservableCollection<string>();
-                foreach (var item in this.DirectoriesAndFiles)
+                foreach (var item in this.AllData)
                 {
                     arch.Add(item);
                 }
                 this.history.Push(arch);
-                this.DirectoriesAndFiles.Clear();
+                this.AllData.Clear();
                 foreach (var item in data)
                 {
-                    this.DirectoriesAndFiles.Add(item.Item1);
+                    this.AllData.Add(item.Item1);
                 }
             }
             catch (Exception)
@@ -137,14 +132,17 @@ namespace Gui
             }
         }
 
+        /// <summary>
+        /// Get back.
+        /// </summary>
         public void Back()
         {
-            this.DirectoriesAndFiles.Clear();
+            this.AllData.Clear();
             try
             {
                 foreach (var item in this.history.Pop())
                 {
-                    this.DirectoriesAndFiles.Add(item);
+                    this.AllData.Add(item);
                 }
             }
             catch (Exception)
@@ -154,16 +152,18 @@ namespace Gui
             
         }
 
+        /// <summary>
+        /// Download file from path to path.
+        /// </summary>
         public async Task DownloadFile(string downloadFrom, string downloadTo)
         {
             try
             {
-             /*   if (!Directory.Exists(pathToSaveFiles))
+                if (!Directory.Exists(downloadTo))
                 {
-                    Directory.CreateDirectory(pathToSaveFiles);
-                }*/
+                    Directory.CreateDirectory(downloadTo);
+                }
                 this.Downloads.Add(Path.GetFileName(downloadFrom) + "installing");
-            //    DownloadingFiles.Add(path);
                 
                 await client.Get(downloadFrom, downloadTo);
                 this.Downloads.Remove(Path.GetFileName(downloadFrom) + "installing");
@@ -175,17 +175,20 @@ namespace Gui
             }
         }
 
+        /// <summary>
+        /// Download all from the current directory.
+        /// </summary>
         public Task DownloadAll()
         {
             var tasks = new List<Task>();
-            for (int iter = 0; iter < this.DirectoriesAndFiles.Count; iter++)
+            for (int iter = 0; iter < this.AllData.Count; iter++)
             {
                 var li = iter;
-                if (File.Exists(DirectoriesAndFiles[li]))
+                if (File.Exists(AllData[li]))
                 {
                     tasks.Add(new Task(async () =>
                     {
-                        await this.DownloadFile(DirectoriesAndFiles[li], "../../../../destination");
+                        await this.DownloadFile(AllData[li], "../../../../destination");
                     }));
                 }
             }

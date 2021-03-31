@@ -39,15 +39,10 @@ namespace HW6T1
             }
         }
 
-        /// <summary>
-        /// Stop the server.
-        /// </summary>
-        public void ShutDown() => listener.Stop();
 
-        /// <summary>
-        /// Server process
+        // <summary>
+        /// Run the server.
         /// </summary>
-        /// <param name="client">Tcp client</param>
         private async Task Run(TcpClient client)
         {
             using var stream = client.GetStream();
@@ -55,36 +50,25 @@ namespace HW6T1
             var reader = new StreamReader(stream);
             var writer = new StreamWriter(stream) { AutoFlush = true };
             var data = await reader.ReadLineAsync();
-            var (command, path) = ParseData(data);
+            var (command, path) = GetCommandAndPath(data);
 
             switch (command)
             {
                 case "1":
                     await this.List(path, writer);
                     break;
-
                 case "2":
                     await this.Get(path, writer);
                     break;
-
                 default:
-                    throw new ArgumentException("Command error.");
+                    throw new ArgumentException("Incorrect request!");
             }
         }
 
-        /// <summary>
-        /// Data parsing.
-        /// </summary>
-        /// <param name="data">String with command and path</param>
-        /// <returns>Command and path</returns>
-        private (string, string) ParseData(string data) => (data.Split()[0], data.Split()[1]);
 
         /// <summary>
-        /// Comand list.
+        /// Listing files and folders from the path.
         /// </summary>
-        /// <param name="path">Path to the file</param>
-        /// <param name="writer">Stream writer</param>
-        /// <returns><size: Int> (<name: String> <isDir: Boolean>)</returns>
         private async Task List(string path, StreamWriter writer)
         {
             if (!Directory.Exists(path))
@@ -115,11 +99,8 @@ namespace HW6T1
         }
 
         /// <summary>
-        /// Comand get.
+        /// Get file from the path. 
         /// </summary>
-        /// <param name="path">Path to the file.</param>
-        /// <param name="writer">Stream writer</param>
-        /// <returns><size: Long> <content: Bytes></returns>
         private async Task Get(string path, StreamWriter writer)
         {
             if (!File.Exists(path))
@@ -132,5 +113,11 @@ namespace HW6T1
             await fileStream.CopyToAsync(writer.BaseStream);
             await writer.WriteLineAsync();
         }
+
+        /// <summary>
+        /// Parse request.
+        /// </summary>
+        private (string, string) GetCommandAndPath(string data) => (data.Split()[0], data.Split()[1]);
+
     }
 }

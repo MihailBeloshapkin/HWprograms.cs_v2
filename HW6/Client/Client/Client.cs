@@ -8,17 +8,13 @@ using System.Threading.Tasks;
 namespace Gui
 {
     /// <summary>
-    /// Simple client
+    /// Simple client realisation.
     /// </summary>
     public class Client
     {
         private int port;
         private string host;
-        //    private readonly TcpClient client;
-        //    private readonly Stream stream;
-        //    private readonly StreamReader reader;
-        //    private readonly StreamWriter writer;
-
+        
         /// <summary>
         /// Client constructor.
         /// </summary>
@@ -28,17 +24,11 @@ namespace Gui
         {
             this.host = host;
             this.port = port;
-            //    this.client = new TcpClient(host, port);
-            //    this.stream = client.GetStream();
-            //    this.reader = new StreamReader(stream);
-            //    this.writer = new StreamWriter(stream) { AutoFlush = true };
         }
 
         /// <summary>
-        /// Requests file downloading from the server.
+        /// Get the file from the path.
         /// </summary>
-        /// <param name="path">Path to the file.</param>
-        /// <returns><size: Long> <content: Bytes></returns>
         public async Task Get(string path, string destination)
         {
             var client = new TcpClient(host, port);
@@ -80,10 +70,8 @@ namespace Gui
 
 
         /// <summary>
-        /// Requests list of files in server's directory
+        /// Get list of directories and files in the path.
         /// </summary>
-        /// <param name="path">Path to the file.</param>
-        /// <returns><size: Int> (<name: String> <isDir: Boolean>)</returns>
         public async Task<List<(string, bool)>> List(string path)
         {
             var client = new TcpClient(host, port);

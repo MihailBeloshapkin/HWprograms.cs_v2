@@ -38,11 +38,11 @@
 
                 <StackPanel Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,0,47" Grid.RowSpan="2">
                     <Label Content="IP:"/>
-                    <TextBox x:Name="textBoxIP" MinWidth="200" Text="{Binding Path=Ip, Mode=TwoWay}"/>
+                    <TextBox x:Name="infoIP" MinWidth="200" Text="{Binding Path=Ip, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,198,78" Grid.RowSpan="2">
                     <Label Content="Port:"/>
-                    <TextBox x:Name="textBoxPort" MinWidth="200" Text="{Binding Path=Port, Mode=TwoWay}"/>
+                    <TextBox x:Name="infoPort" MinWidth="200" Text="{Binding Path=Port, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,198,78" Grid.RowSpan="2">
                     <Label Content="Show content from:"/>
@@ -56,7 +56,6 @@
                          Grid.RowSpan="4" Grid.ColumnSpan="3" Margin="19,19,19,19"
                          ItemsSource="{Binding Path=DirectoriesAndFiles, Mode=OneWay}"
                          MouseDoubleClick="GetIntoFolder"
-                         
                          />
             </Grid>
         </TabItem>
