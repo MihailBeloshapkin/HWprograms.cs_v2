@@ -5,7 +5,6 @@ namespace SuccessTests
 {
     public class SuccessTests
     {
-        /*
         [BeforeClass]
         public static void BeforeClassTest()
         {
@@ -19,10 +18,9 @@ namespace SuccessTests
             int i = 0;
             i *= 30;
         }
-        */
-
+        
         [Test]
-        public static void RandomTest1()
+        public void RandomTest1()
         {
         //    var array = new int[30];
         //    array[30]++;
@@ -30,7 +28,7 @@ namespace SuccessTests
             number += 239;
         }
 
-        /*
+        
         [After]
         public void AfterTest()
         {
@@ -44,6 +42,6 @@ namespace SuccessTests
             int i = 8;
             i += 7;
         }
-        */
+        
     }
 }

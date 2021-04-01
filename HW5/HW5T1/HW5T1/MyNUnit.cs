@@ -72,7 +72,7 @@ namespace HW5T1
             Parallel.ForEach(types, (type) => 
             {
                 this.declarationErrors = Distribution.SortMethods(out methods, type);
-                if (this.declarationErrors.Count != 0)
+                if (this.declarationErrors != null && this.declarationErrors.Count != 0)
                 {
                     return;
                 }
@@ -163,7 +163,7 @@ namespace HW5T1
         /// </summary>
         public void DisplayResults()
         {
-            if (this.declarationErrors.Count != 0)
+            if (this.declarationErrors != null && this.declarationErrors.Count != 0)
             {
                 Console.WriteLine("ERRORS:");
                 foreach (var error in this.declarationErrors)
