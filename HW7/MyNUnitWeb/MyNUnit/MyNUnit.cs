@@ -222,7 +222,7 @@ namespace HW5T1
                 {
                     foreach (var test in this.methods.Tests)
                     {
-                        testInfo.Enqueue(new TestData(test.Name, "failed", e.Message, 0));
+                        testInfo.Enqueue(new TestData(test.Name, "Failed", e.Message, 0));
                     }
 
                     return false;

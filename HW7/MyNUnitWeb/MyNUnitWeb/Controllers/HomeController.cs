@@ -9,6 +9,7 @@ using MyNUnitWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using HW5T1;
 using System.Linq;
 
@@ -22,28 +23,70 @@ namespace MyNUnitWeb.Controllers
 
         public HomeController(IWebHostEnvironment environment)
         {
-            /*    if (!Directory.Exists($"{this.environment.WebRootPath}/Temp)"))
+            this.environment = environment;
+           /* if (!Directory.Exists($"{this.environment.WebRootPath}/Temp)"))
                 {
                     Directory.CreateDirectory($"{this.environment.WebRootPath}/Temp");
                 }
-                this.environment = environment;
+             /*   this.environment = environment;
                 this.pathToAssemblies = Path.Combine(this.environment.WebRootPath, "Assemblies");
                 this.currentState = new CurrentStateModel(environment); */
-            this.environment = environment;
+            
             this.currentState = new CurrentStateModel(environment);
         }
 
         public IActionResult Index()
-            => View("MyView", currentState);
-        /*
+        {
+            return View("Index", currentState);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> ExecuteTests()
+        public IActionResult AddAssembly(IFormFile file)
+        {
+            if (file == null)
+                return View(currentState);
+
+            using (var fileStream = new FileStream($"{environment.WebRootPath}/Temp/{file.FileName}", FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+            return RedirectToAction("Index", currentState);
+        }
+        
+
+
+        [HttpPost]
+        public IActionResult ExecuteTests()
         {
             var nunit = new HW5T1.MyNUnit($"{environment.WebRootPath}/Temp");
             nunit.Execute();
             var results = nunit.GetAllData();
-
-        }*/
-
+            var assemblyReport = new AssemblyReportModel();
+            foreach (var test in results)
+            {
+                var currentReport = new TestReportModel();
+                currentReport.Name = test.Name;
+                currentReport.Time = test.TimeOfExecution;
+                currentReport.WhyIgnored = test.WhyIgnored;
+                if (test.Result == "Success")
+                {
+                    currentReport.Passed = true;
+                    assemblyReport.Passed++;
+                }
+                else if (test.Result == "Failed")
+                {
+                    currentReport.Passed = false;
+                    assemblyReport.Failed++;
+                }
+                else
+                {
+                    currentReport.Passed = null;
+                    assemblyReport.Ignored++;
+                }
+                assemblyReport.TestReports.Add(currentReport);
+            }
+            currentState.AssemblyReports.Add(assemblyReport);
+            return View("Index", currentState);
+        }
     }
 }
