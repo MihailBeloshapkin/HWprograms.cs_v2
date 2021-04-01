@@ -19,25 +19,27 @@ namespace MyNUnitWeb.Controllers
     {
         private readonly IWebHostEnvironment environment;
         private readonly CurrentStateModel currentState;
+        private AssemblyReportModel currentAssembly;
         private string pathToAssemblies;
 
         public HomeController(IWebHostEnvironment environment)
         {
             this.environment = environment;
-           /* if (!Directory.Exists($"{this.environment.WebRootPath}/Temp)"))
-                {
-                    Directory.CreateDirectory($"{this.environment.WebRootPath}/Temp");
-                }
-             /*   this.environment = environment;
-                this.pathToAssemblies = Path.Combine(this.environment.WebRootPath, "Assemblies");
-                this.currentState = new CurrentStateModel(environment); */
-            
+            /* if (!Directory.Exists($"{this.environment.WebRootPath}/Temp)"))
+                 {
+                     Directory.CreateDirectory($"{this.environment.WebRootPath}/Temp");
+                 }
+              /*   this.environment = environment;
+                 this.pathToAssemblies = Path.Combine(this.environment.WebRootPath, "Assemblies");
+                 this.currentState = new CurrentStateModel(environment); */
+            this.currentAssembly = new AssemblyReportModel();
             this.currentState = new CurrentStateModel(environment);
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            return View("Index", currentState);
+            return View("Index", currentAssembly.TestReports);
         }
 
         [HttpPost]
@@ -50,7 +52,7 @@ namespace MyNUnitWeb.Controllers
             {
                 file.CopyTo(fileStream);
             }
-            return RedirectToAction("Index", currentState);
+            return RedirectToAction("Index", currentAssembly.TestReports);
         }
         
 
@@ -84,9 +86,11 @@ namespace MyNUnitWeb.Controllers
                     assemblyReport.Ignored++;
                 }
                 assemblyReport.TestReports.Add(currentReport);
+                
             }
+            this.currentAssembly = assemblyReport;
             currentState.AssemblyReports.Add(assemblyReport);
-            return View("Index", currentState);
+            return View("Index", currentAssembly.TestReports);
         }
     }
 }

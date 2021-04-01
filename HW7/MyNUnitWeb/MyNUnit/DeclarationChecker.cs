@@ -34,7 +34,7 @@ namespace HW5T1
                 }
                 if (test.IsStatic)
                 {
-                    declarationErrors.Add($"Incorrect declaration: {test.Name} should be static");
+                    declarationErrors.Add($"Incorrect declaration: {test.Name} shouldn't be static");
                     return;
                 }
             }

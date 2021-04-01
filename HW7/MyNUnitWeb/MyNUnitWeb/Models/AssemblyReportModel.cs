@@ -8,7 +8,7 @@ namespace MyNUnitWeb.Models
     {
         string Name { get; set; }
         
-        public List<TestReportModel> TestReports { get; set; } = new List<TestReportModel>();
+        public IList<TestReportModel> TestReports { get; set; } = new List<TestReportModel>();
          
         [Key]
         public string Id { get; set; }
