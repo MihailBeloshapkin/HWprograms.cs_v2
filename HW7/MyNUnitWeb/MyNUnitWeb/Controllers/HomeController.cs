@@ -20,6 +20,7 @@ namespace MyNUnitWeb.Controllers
         private readonly IWebHostEnvironment environment;
         private readonly CurrentStateModel currentState;
         private AssemblyReportModel currentAssembly;
+        private TestInfoContainer infoContainer;
         private string pathToAssemblies;
 
         public HomeController(IWebHostEnvironment environment)
@@ -33,26 +34,27 @@ namespace MyNUnitWeb.Controllers
                  this.pathToAssemblies = Path.Combine(this.environment.WebRootPath, "Assemblies");
                  this.currentState = new CurrentStateModel(environment); */
             this.currentAssembly = new AssemblyReportModel();
+            this.infoContainer = new TestInfoContainer();
             this.currentState = new CurrentStateModel(environment);
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            return View("Index", currentAssembly.TestReports);
+            return View("Index", infoContainer.TestReports);
         }
 
         [HttpPost]
         public IActionResult AddAssembly(IFormFile file)
         {
             if (file == null)
-                return View(currentState);
+                return View(infoContainer.TestReports);
 
             using (var fileStream = new FileStream($"{environment.WebRootPath}/Temp/{file.FileName}", FileMode.Create))
             {
                 file.CopyTo(fileStream);
             }
-            return RedirectToAction("Index", currentAssembly.TestReports);
+            return RedirectToAction("Index", infoContainer.TestReports);
         }
         
 
@@ -85,12 +87,13 @@ namespace MyNUnitWeb.Controllers
                     currentReport.Passed = null;
                     assemblyReport.Ignored++;
                 }
+                infoContainer.TestReports.Add(currentReport);
                 assemblyReport.TestReports.Add(currentReport);
                 
             }
             this.currentAssembly = assemblyReport;
             currentState.AssemblyReports.Add(assemblyReport);
-            return View("Index", currentAssembly.TestReports);
+            return View("Index", infoContainer.TestReports);
         }
     }
 }

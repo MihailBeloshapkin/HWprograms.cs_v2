@@ -32,11 +32,41 @@
         </div>
         <div class="resultArea">
             <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Result</th>
+                        <th>Ignore reason</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+
                 <tbody>
                     @foreach (MyNUnitWeb.Models.TestReportModel p in Model)
                     {
+                        var result = "";
+                        var ignoreReason = "";
+                        var time = "";
+                        if (p.Passed == true)
+                        {
+                            result = "Success";
+                            time = p.Time.ToString();
+                        }
+                        if (p.Passed == false)
+                        {
+                            result = "Failed";
+                            time = p.Time.ToString();
+                        }
+                        if (p.Passed == null)
+                        {
+                            ignoreReason = p.WhyIgnored;
+                            result = "Ignored";
+                        }
                         <tr>
                             <td>@p.Name</td>
+                            <td>@result</td>
+                            <td>@ignoreReason</td>
+                            <td>@time</td>
                         </tr>
                     }
                 </tbody>
