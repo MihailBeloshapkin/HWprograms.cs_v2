@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace Injector
 {
+    /// <summary>
+    /// Contains methods to Get instance on an object.
+    /// </summary>
     public class Reflect
     {
         /// <summary>
