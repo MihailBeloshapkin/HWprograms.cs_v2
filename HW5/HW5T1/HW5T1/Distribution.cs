@@ -20,7 +20,7 @@ namespace HW5T1
             {
                 foreach (var attribute in Attribute.GetCustomAttributes(method))
                 {
-                    DeclarationChecker.CheckAttribute(method, attribute, out declarationErrors);
+                    declarationErrors = DeclarationChecker.CheckAttribute(method, attribute);
                     if (declarationErrors.Count != 0)
                     {
                         return declarationErrors;

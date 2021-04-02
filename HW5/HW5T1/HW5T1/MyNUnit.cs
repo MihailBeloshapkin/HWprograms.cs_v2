@@ -35,7 +35,6 @@ namespace HW5T1
         /// <summary>
         /// Get list of methods and delete all data from queue.
         /// </summary>
-        /// <returns></returns>
         public List<TestData> GetAllData()
         {
             var allData = new List<TestData>();
