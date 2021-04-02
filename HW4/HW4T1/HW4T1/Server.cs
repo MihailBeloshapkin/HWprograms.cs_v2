@@ -32,6 +32,9 @@ namespace HW4T1
             }
         }
 
+        public void  ShutDown()
+            => this.listener.Stop();
+
         /// <summary>
         /// Run the server.
         /// </summary>
@@ -70,21 +73,21 @@ namespace HW4T1
             var files = Directory.GetFiles(path);
             var directories = Directory.GetDirectories(path);
             
-            var responce = (directories.Length + files.Length).ToString();
+            var response = (directories.Length + files.Length).ToString();
 
             foreach (var file in files)
             {
                 var filePath = file.Remove(0, file.IndexOf(path));
-                responce += $" {filePath} false";
+                response += $" {filePath} false";
             }
 
             foreach (var directory in directories)
             {
                 var directoryPath = directory.Remove(0, directory.IndexOf(path));
-                responce += $" {directoryPath} true";
+                response += $" {directoryPath} true";
             }
 
-            await writer.WriteLineAsync(responce);
+            await writer.WriteLineAsync(response);
         }
 
         /// <summary>

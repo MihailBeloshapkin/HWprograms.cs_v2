@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HW4T1
 {
     /// <summary>
-    /// Client
+    /// Client realization.
     /// </summary>
     public class Client
     {
@@ -25,7 +25,7 @@ namespace HW4T1
         /// </summary>
         public async Task Get(string path, string destination)
         {
-            var client = new TcpClient(host, port);
+            using var client = new TcpClient(host, port);
             var stream = client.GetStream();
             var reader = new StreamReader(stream);
             var writer = new StreamWriter(stream) { AutoFlush = true };
@@ -65,7 +65,7 @@ namespace HW4T1
         /// <summary>
         /// Get list of directories and files in the path.
         /// </summary>
-        public async Task<(int, List<(string, bool)>)> List(string path)
+        public async Task<List<(string, bool)>> List(string path)
         {
             var client = new TcpClient(host, port);
             using var stream = client.GetStream();
@@ -73,13 +73,13 @@ namespace HW4T1
             var reader = new StreamReader(stream);
 
             await writer.WriteLineAsync($"1 {path}");
-            var responce = await reader.ReadLineAsync();
-            if (responce == "-1")
+            var response = await reader.ReadLineAsync();
+            if (response == "-1")
             {
                 throw new Exception("Directory not found");
             }
 
-            var responceSplit = responce.Split(' ');
+            var responceSplit = response.Split(' ');
             var size = int.Parse(responceSplit[0]);
 
             var result = new List<(string, bool)>();
@@ -90,7 +90,7 @@ namespace HW4T1
                 var isDir = Convert.ToBoolean(responceSplit[iter * 2 + 2]);
                 result.Add((fullPath, isDir));
             }
-            return (size, result);
+            return result;
         }
     }
 }

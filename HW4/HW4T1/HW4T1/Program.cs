@@ -11,8 +11,12 @@ namespace HW4T1
             
             var client = new Client("127.0.0.1", 8888);
             _ = server.Process();
+            await client.Get("randomPath", "randomDestination");
+            var list0 = await client.List("../../../../HW4T1");
+
             var command = Console.ReadLine();  // ../../../../HW4T1Test/testData
             
+
             switch (command)
             {
                 case "1":
@@ -20,8 +24,8 @@ namespace HW4T1
                     break;
                 case "2":
                     var list = await client.List("../../../../HW4T1");
-                    Console.WriteLine(list.Item1);
-                    foreach (var data in list.Item2)
+                    Console.WriteLine(list.Count);
+                    foreach (var data in list)
                     {
                         var (name, isDir) = data;
 
