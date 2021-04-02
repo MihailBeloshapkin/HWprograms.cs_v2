@@ -39,6 +39,11 @@ namespace HW6T1
             }
         }
 
+        /// <summary>
+        /// Stop listener.
+        /// </summary>
+        public void ShutDown()
+            => this.listener.Stop();
 
         // <summary>
         /// Run the server.
