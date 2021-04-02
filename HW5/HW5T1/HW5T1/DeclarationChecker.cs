@@ -25,7 +25,6 @@ namespace HW5T1
                 if (!test.IsStatic)
                 {
                     declarationErrors.Add($"Methods with {attributeName} attribute should be static");
-                    return declarationErrors;
                 }
             }
 
@@ -34,12 +33,14 @@ namespace HW5T1
                 if (test.ReturnType.Name != "Void")
                 {
                     declarationErrors.Add($"Incorrect declaration: {test.Name} should be void");
-                    return declarationErrors;
                 }
                 if (test.IsStatic)
                 {
                     declarationErrors.Add($"Incorrect declaration: {test.Name} shouldn't be static");
-                    return declarationErrors;
+                }
+                if (test.GetParameters().Length != 0)
+                {
+                    declarationErrors.Add($"Incorrect declaration: {test.Name} shouldn't have input parameters");
                 }
             }
             return declarationErrors;

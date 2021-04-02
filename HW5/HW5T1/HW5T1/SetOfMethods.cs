@@ -5,7 +5,9 @@ using System.Text;
 
 namespace HW5T1
 {
-    // This class contains the set of methods.
+    /// <summary>
+    /// This class contains the set of methods. 
+    /// </summary>
     public class SetOfMethods
     {
         /// <summary>

@@ -22,13 +22,10 @@ namespace SuccessTests
         [Test]
         public void RandomTest1()
         {
-        //    var array = new int[30];
-        //    array[30]++;
             int number = 30;
             number += 239;
         }
 
-        
         [After]
         public void AfterTest()
         {
