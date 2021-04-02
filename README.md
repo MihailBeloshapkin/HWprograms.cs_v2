@@ -1,1 +1,1 @@
-This repository contains c# homework programs from the second semester
+This repository contains c# homework programs from the third semester
