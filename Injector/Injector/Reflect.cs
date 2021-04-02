@@ -7,20 +7,9 @@ namespace Injector
 {
     class Reflect
     {
-        // Информация о полях и реализуемых интерфейсах 
-        public static void FieldInterfaceInfo<T>(T obj) where T : class
-        {
-            Type t = typeof(T);
-            Console.WriteLine("\n*** Реализуемые интерфейсы ***\n");
-            var im = t.GetInterfaces();
-            foreach (Type tp in im)
-                Console.WriteLine("--> " + tp.Name);
-            Console.WriteLine("\n*** Поля и свойства ***\n");
-            FieldInfo[] fieldNames = t.GetFields();
-            foreach (FieldInfo fil in fieldNames)
-                Console.Write("--> " + fil.ReflectedType.Name + " " + fil.Name + "\n");
-        }
-
+        /// <summary>
+        /// Search constructor argument realization.
+        /// </summary>
         private static Type SearchRealisation(Type arg, List<Type> realisations)
         {
             Type answer = null;
@@ -43,80 +32,72 @@ namespace Injector
                     }
                 }
             }
+            if (arg.IsAbstract)
+            {
+                foreach (var item in realisations)
+                {
+                    var baseClasse = item.BaseType;
+                    if (baseClasse.Name == arg.Name)
+                    {
+                        countOfRealisations++;
+                        answer = item;
+                    }
+                }
+            }
+            if (arg.IsClass)
+            {
+                foreach (var item in realisations)
+                {
+                    if (item.IsClass && item.Name == arg.Name)
+                    {
+                        countOfRealisations++;
+                        answer = item;
+                    }
+                }
+                answer = arg;
+            }
+            if (countOfRealisations > 1)
+            {
+                throw new Exception($"More than one realization of class {arg.Name}");
+            }
+            if (countOfRealisations < 1)
+            {
+                throw new Exception($"No realization for class {arg.Name}");
+            }
             return answer;
-            return null;
         }
 
 
+        /// <summary>
+        /// Create instance of an object.
+        /// </summary>
         public static Object Injector<T>(List<Type> examples) where T : class
         {
             Type t = typeof(T);
-         //   t.GetInterfaces();
             
             ConstructorInfo[] con = t.GetConstructors();
 
             var argTypeList = new List<Type>();
-            
-            Object[] objectArray = new Object[examples.Count];
-
-
-
-        //    examples.CopyTo(new Type[] { });
-            bool[] isActivated = new bool[] { false };
 
             // Get constructor arguments.
-            foreach (ConstructorInfo info in con)
+            ParameterInfo[] parameters = con[0].GetParameters();
+            for (int i = 0; i < parameters.Length; i++)
             {
-                ParameterInfo[] parameters = info.GetParameters();
-                for (int i = 0; i < parameters.Length; i++)
-                {
-                    argTypeList.Add(parameters[i].ParameterType);
-                }
+                argTypeList.Add(parameters[i].ParameterType);
             }
-
+            
             var argTypeArray = new Type[argTypeList.Count];
             argTypeList.CopyTo(argTypeArray);
             List<Object> createdObjects = new List<object>();
 
-            int iter = 0;
             foreach (var arg in argTypeList)
             {
-                /*
-                if (!examples.Contains(arg))
-                {
-                    throw new Exception("No dependency realization!");
-                }
-                */
                 var instanceType = SearchRealisation(arg, examples);
                 var instance = Activator.CreateInstance(instanceType);
                 createdObjects.Add(instance);
-                objectArray[iter] = instance;
             }
-            ConstructorInfo information = t.GetConstructor(argTypeArray);
-            return information.Invoke(objectArray);
-        }
-
-        // Данный метод выводит информацию о содержащихся в классе методах
-        public static void MethodReflectInfo<T>(T obj) where T : class
-        {
-            Type t = typeof(T);
-            // Получаем коллекцию методов
-            MethodInfo[] MArr = t.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
-            Console.WriteLine("*** Список методов класса {0} ***\n", obj.ToString());
-
-            // Вывести методы
-            foreach (MethodInfo m in MArr)
-            {
-                Console.Write(" --> " + m.ReturnType.Name + " \t" + m.Name + "(");
-                // Вывести параметры методов
-                ParameterInfo[] p = m.GetParameters();
-                for (int i = 0; i < p.Length; i++)
-                {
-                    Console.Write(p[i].ParameterType.Name + " " + p[i].Name);
-                    if (i + 1 < p.Length) Console.Write(", ");
-                }
-                Console.Write(")\n");
-            }
+            ConstructorInfo information = t.GetConstructor(argTypeList.ToArray());
+            return information.Invoke(createdObjects.ToArray());
         }
     }
 }
