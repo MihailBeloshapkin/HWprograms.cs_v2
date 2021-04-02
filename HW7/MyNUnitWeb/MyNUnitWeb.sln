@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyNUnit", "MyNUnit\MyNUnit.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attributes", "Attributes\Attributes.csproj", "{8CAF709C-4D5F-4B1F-BE7C-473DC1084E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuccessTests", "SuccessTests\SuccessTests.csproj", "{0CB04B9C-198F-4716-9140-8437FAD37B3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuccessTests", "SuccessTests\SuccessTests.csproj", "{0CB04B9C-198F-4716-9140-8437FAD37B3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW7T1Tests", "HW7T1Tests\HW7T1Tests.csproj", "{885D0875-62B1-4420-A8B2-9173CD4D9ECD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0CB04B9C-198F-4716-9140-8437FAD37B3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CB04B9C-198F-4716-9140-8437FAD37B3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CB04B9C-198F-4716-9140-8437FAD37B3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885D0875-62B1-4420-A8B2-9173CD4D9ECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885D0875-62B1-4420-A8B2-9173CD4D9ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885D0875-62B1-4420-A8B2-9173CD4D9ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885D0875-62B1-4420-A8B2-9173CD4D9ECD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
