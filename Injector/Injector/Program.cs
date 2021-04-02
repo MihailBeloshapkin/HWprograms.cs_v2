@@ -8,19 +8,28 @@ namespace Injector
     {
         public class A
         {
-            public A(Interface1 x) { }
+            public A(B x) { }
         }
 
-        public class B : Interface1 { }
-
-        public interface Interface1
+        public class B
         {
-
+            public B(C x, D y) { }
         }
+
+        public class C
+        {
+            public C() {}
+        }
+
+        public class D
+        {
+            public D() { }
+        }
+
 
         static void Main(string[] args)
         {
-            var objectA = Reflect.Injector<A>(new List<Type> { typeof(B)});
+            var objectA = Reflect.Initialize(typeof(A), new List<Type> { typeof(B), typeof(C), typeof(D) });
         }
     }
 }

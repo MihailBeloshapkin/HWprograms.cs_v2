@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Injector
 {
-    class Reflect
+    public class Reflect
     {
         /// <summary>
         /// Search constructor argument realization.
@@ -67,25 +67,38 @@ namespace Injector
             return answer;
         }
 
-
         /// <summary>
         /// Create instance of an object.
         /// </summary>
-        public static Object Injector<T>(List<Type> examples) where T : class
+        public static Object Initialize(Type root, List<Type> examples)
         {
-            Type t = typeof(T);
-            
-            ConstructorInfo[] con = t.GetConstructors();
+            return localInitialize(root, examples, null);
+        }
+
+        /// <summary>
+        /// Create instance of an object. Recursive initialization.
+        /// </summary>
+        private static Object localInitialize(Type root, List<Type> examples, List<Type> prevDependencies)
+        {
+            ConstructorInfo[] con = root.GetConstructors();
 
             var argTypeList = new List<Type>();
 
+            if (prevDependencies == null)
+            {
+                prevDependencies = new List<Type>();
+            }
             // Get constructor arguments.
             ParameterInfo[] parameters = con[0].GetParameters();
             for (int i = 0; i < parameters.Length; i++)
             {
+                if (prevDependencies.Contains(parameters[i].ParameterType))
+                {
+                    throw new Exception("Dependency loop.");
+                }
                 argTypeList.Add(parameters[i].ParameterType);
             }
-            
+
             var argTypeArray = new Type[argTypeList.Count];
             argTypeList.CopyTo(argTypeArray);
             List<Object> createdObjects = new List<object>();
@@ -93,10 +106,12 @@ namespace Injector
             foreach (var arg in argTypeList)
             {
                 var instanceType = SearchRealisation(arg, examples);
-                var instance = Activator.CreateInstance(instanceType);
+                examples.Remove(instanceType);
+                prevDependencies.Add(instanceType);
+                var instance = localInitialize(instanceType, examples, prevDependencies);
                 createdObjects.Add(instance);
             }
-            ConstructorInfo information = t.GetConstructor(argTypeList.ToArray());
+            ConstructorInfo information = root.GetConstructor(argTypeList.ToArray());
             return information.Invoke(createdObjects.ToArray());
         }
     }
