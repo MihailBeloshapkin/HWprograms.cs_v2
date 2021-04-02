@@ -1,6 +1,6 @@
 image: Visual Studio 2019
 before_build:
-  - nuget restore HW1\HW1T1\HW1T1.sln
+  - nuget restore HW4\HW4T1\HW1T1.sln
 
 build_script:
-  - dotnet build HW1\HW1T1\HW1T1.sln
+  - dotnet build HW4\HW4T1\HW1T1.sln
