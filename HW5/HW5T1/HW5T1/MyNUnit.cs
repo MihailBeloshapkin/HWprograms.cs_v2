@@ -137,6 +137,7 @@ namespace HW5T1
                     queue.Enqueue(new TestData(method.Name, false, e.Message, stopWatch.ElapsedMilliseconds));
                 }
 
+                this.TryToExecuteAfterOrBeforeTest(instance, this.methods.After);
                 return;
             }
 
