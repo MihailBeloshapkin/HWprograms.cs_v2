@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Gui"
+        xmlns:local="clr-namespace:Gui" d:DataContext="{d:DesignInstance Type=local:ViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="470" Width="900" ResizeMode="NoResize">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -21,51 +21,67 @@
         <TabItem Header="Listing">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="64*"/>
-                    <ColumnDefinition Width="134*"/>
-                    <ColumnDefinition Width="199*"/>
-                    <ColumnDefinition Width="199*"/>
-                    <ColumnDefinition Width="199*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="213*"/>
+                    <ColumnDefinition Width="224*"/>
+                    <ColumnDefinition Width="224*"/>
+                    <ColumnDefinition Width="224*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30*"/>
-                    <RowDefinition Height="30*"/>
-                    <RowDefinition Height="50*"/>
-                    <RowDefinition Height="50*"/>
-                    <RowDefinition Height="20*"/>
-                    <RowDefinition Height="80*"/>
+                    <RowDefinition Height="49*"/>
+                    <RowDefinition Height="49*"/>
+                    <RowDefinition Height="82*"/>
+                    <RowDefinition Height="82*"/>
+                    <RowDefinition Height="86*"/>
+                    <RowDefinition Height="78*"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,0,47" Grid.RowSpan="2">
+                <StackPanel Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="208,0,0,0">
                     <Label Content="IP:"/>
                     <TextBox x:Name="infoIP" MinWidth="200" Text="{Binding Path=Ip, Mode=TwoWay}"/>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,198,78" Grid.RowSpan="2">
+                <StackPanel Grid.Column="2" Grid.ColumnSpan="3" Grid.RowSpan="3" Margin="208,49,0,0">
                     <Label Content="Port:"/>
                     <TextBox x:Name="infoPort" MinWidth="200" Text="{Binding Path=Port, Mode=TwoWay}"/>
                 </StackPanel>
-                <StackPanel Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,198,78" Grid.RowSpan="2">
+                <StackPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3"  Grid.RowSpan="3" Margin="208,49,0,0">
                     <Label Content="Show content from:"/>
-                    <TextBox x:Name="showContent" MinWidth="200" Text="{Binding Path=showDirectory, Mode=TwoWay}"/>
+                    <TextBox x:Name="showContent" MinWidth="200" Text="{Binding Path=ServerPath, Mode=TwoWay}"/>
                 </StackPanel>
                 <Button x:Name="Connect" Content="connect" Grid.Column="4" Grid.Row="0" Grid.RowSpan="2" Click="Connect_Click" Margin="14,15,15,15" />
                 <Button x:Name="Show" Content="Show data" Grid.Column="4" Grid.Row="2" Click="Show_Click" Margin="14,15,15,15"/>
                 <Button x:Name="Back" Content="Back" Grid.Column="3" Grid.Row="3" 
                         Click="Back_Click" Margin="15,15,16,15" Visibility="Visible"/>
-                <ListBox x:Name="dataBox" Grid.Row="0" Grid.Column="0"
-                         Grid.RowSpan="4" Grid.ColumnSpan="3" Margin="19,19,19,19"
-                         ItemsSource="{Binding Path=DirectoriesAndFiles, Mode=OneWay}"
+                <ListBox x:Name="dataBox" Grid.Row="0" Grid.Column="1"
+                         Grid.RowSpan="4" Grid.ColumnSpan="2" Margin="4,19,19,19"
+                         ItemsSource="{Binding Path=AllData, Mode=OneWay}"
                          MouseDoubleClick="GetIntoFolder"
                          />
+
+                <StackPanel Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="8,82,224,0" Grid.RowSpan="2">
+                    <Label Content="Download to:"/>
+                    <TextBox x:Name="DownloadPath" MinWidth="200" Text="{Binding Path=DownloadTo, Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,82,223,0" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                    <Label Content="Download from:"/>
+                    <TextBox x:Name="DownloadFromPath" MinWidth="200" 
+                             Text="{Binding Path=DownloadFrom, Mode=TwoWay}"/>
+                </StackPanel>
+                <Button x:Name="Get" Content="Get" Grid.Column="3" 
+                        Grid.Row="4" Click="Download_Click" Margin="15,15,15,15"/>
+                <Button x:Name="GetAll" Content="Download all"
+                        Grid.Column="4" Grid.Row="4"
+                        Click="Download_All_Click" Margin="15,15,15,15"/>
+
             </Grid>
         </TabItem>
         <TabItem Header="Getter">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="209*"/>
+                    <ColumnDefinition Width="320*"/>
+                    <ColumnDefinition Width="50*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30*"/>
@@ -75,23 +91,9 @@
                     <RowDefinition Height="80*"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2">
-                    <Label Content="Download to:"/>
-                    <TextBox x:Name="DownloadPath" MinWidth="200" Text="{Binding Path=DownloadPath, Mode=TwoWay}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="1">
-                    <Label Content="Download from:"/>
-                    <TextBox x:Name="DownloadFromPath" MinWidth="200" 
-                             Text="{Binding Path=DownloadFromPath, Mode=OneWay}"/>
-                </StackPanel>
-                <Button x:Name="Get" Content="Get" Grid.Column="3" 
-                        Grid.Row="0" Grid.RowSpan="2" Click="Download_Click"/>
-                <Button x:Name="GetAll" Content="Download all"
-                        Grid.Column="3" Grid.Row="2"
-                        Click="Download_All_Click"/>
-                <ListBox x:Name="Downloading" Grid.Row="2" Grid.Column="1"
-                         Grid.ColumnSpan="2" Grid.RowSpan="2" 
-                         ItemsSource="{Binding Path=Downloads, Mode=OneWay}"/>
+                <ListBox x:Name="Downloading" Grid.Row="1" Grid.Column="0"
+                         Grid.ColumnSpan="4" Grid.RowSpan="3" 
+                         ItemsSource="{Binding Path=Downloads, Mode=OneWay}" Margin="5,5,5,5"/>
 
             </Grid>
         </TabItem>

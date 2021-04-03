@@ -20,36 +20,36 @@ namespace Gui
     /// </summary>
     public partial class MainWindow : Window
     {
-        ViewModel viewModel;
+        private ViewModel viewModel;
 
         public MainWindow()
         {
             InitializeComponent();
             this.viewModel = new ViewModel();
+            this.DataContext = viewModel;
+
             dataBox.ItemsSource = viewModel.AllData;
             Downloading.ItemsSource = viewModel.Downloads;
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            this.viewModel.serverPath = showContent.Text;
-            viewModel.EstablishConnection(this.infoIP.Text, this.infoPort.Text);
+            viewModel.EstablishConnection();
         }
 
         private void Download_Click(object sender, RoutedEventArgs e)
         {
-            _ = viewModel.DownloadFile(this.DownloadFromPath.Text, this.DownloadPath.Text);
+            _ = viewModel.DownloadFile();
         }
 
         private void Show_Click(object sender, RoutedEventArgs e)
         {
-            this.viewModel.UpdateList(showContent.Text);
+            this.viewModel.UpdateList();
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
-        {
-            this.viewModel.Back();
-        }
+            => this.viewModel.Back();
+        
 
         private void GetIntoFolder(object sender, MouseButtonEventArgs e)
         {
@@ -58,8 +58,7 @@ namespace Gui
         }
 
         private void Download_All_Click(object sender, RoutedEventArgs e)
-        {
-            this.viewModel.DownloadAll();
-        }
+            => this.viewModel.DownloadAll();
+        
     }
 }

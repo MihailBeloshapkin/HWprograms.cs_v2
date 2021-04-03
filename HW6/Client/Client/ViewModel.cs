@@ -13,12 +13,14 @@ namespace Gui
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private string ip = "127.0.0.1";
-        private int port = 8888;
+        private string ip;
+        private string port;
         private Server server;
         private Client client;
         public event PropertyChangedEventHandler PropertyChanged;
-        public string serverPath;
+        private string serverPath;
+        private string downloadFrom;
+        private string downloadTo;
 
         /// <summary>
         /// Previous files and folders.
@@ -35,10 +37,52 @@ namespace Gui
         /// </summary>
         public ObservableCollection<string> AllData { get; set; } = new ObservableCollection<string>();
 
+        /// <summary>
+        /// In case if we want to download file we should specify the DownloadFrom path.
+        /// </summary>
+        public string DownloadFrom
+        {
+            get => this.downloadFrom;
+            set
+            {
+                this.downloadFrom = value;
+                OnPropertyChanged("DownloadFrom");
+            }
+        }
 
+        /// <summary>
+        /// In case if we want to download file we should specify the DownloadTo path.
+        /// </summary>
+        public string DownloadTo
+        {
+            get => this.downloadTo;
+            set
+            {
+                this.downloadTo = value;
+                OnPropertyChanged("DownloadTo");
+            }
+        
+        }
+
+        /// <summary>
+        /// Servers shows files and folders by this path. 
+        /// </summary>
+        public string ServerPath
+        {
+            get => this.serverPath;
+            set
+            {
+                this.serverPath = value;
+                OnPropertyChanged("ServerPath");
+            }
+        }
+
+        /// <summary>
+        /// Contains ip information.
+        /// </summary>
         public string Ip
         {
-            get => ip;
+            get => this.ip;
             set
             {
                 ip = value;
@@ -46,7 +90,10 @@ namespace Gui
             }
         }
 
-        public int Port
+        /// <summary>
+        /// Contains information about port.
+        /// </summary>
+        public string Port
         {
             get => this.port;
             set
@@ -70,7 +117,10 @@ namespace Gui
             }
         }
 
-        public void EstablishConnection(string ip, string port)
+        /// <summary>
+        /// Establish connection.
+        /// </summary>
+        public void EstablishConnection()
         {
             try
             {
@@ -83,21 +133,21 @@ namespace Gui
                 return;
             }
             _ = server.Process();
-            UpdateList(serverPath);
+            UpdateList();
         }
 
         /// <summary>
         /// Update list of files and folders.
         /// </summary>
-        public async void UpdateList(string path)
+        public async void UpdateList()
         {
             this.AllData.Clear();
-            if (path == "")
+            if (serverPath == "")
             {
                 MessageBox.Show("Input path!");
                 return;
             }
-            var updatedData = await this.client.List(path);
+            var updatedData = await this.client.List(serverPath);
             foreach (var item in updatedData)
             {
                 this.AllData.Add(item.Item1);
@@ -155,7 +205,7 @@ namespace Gui
         /// <summary>
         /// Download file from path to path.
         /// </summary>
-        public async Task DownloadFile(string downloadFrom, string downloadTo)
+        public async Task DownloadFile()
         {
             try
             {
@@ -178,7 +228,7 @@ namespace Gui
         /// <summary>
         /// Download all from the current directory.
         /// </summary>
-        public Task DownloadAll()
+        public async Task DownloadAll()
         {
             var tasks = new List<Task>();
             for (int iter = 0; iter < this.AllData.Count; iter++)
@@ -186,9 +236,15 @@ namespace Gui
                 var li = iter;
                 if (File.Exists(AllData[li]))
                 {
+                    this.downloadFrom = AllData[li];
+                    this.downloadTo = "../../../../destination";
+                    if (!Directory.Exists(downloadTo))
+                    {
+                        Directory.CreateDirectory(downloadTo);
+                    }
                     tasks.Add(new Task(async () =>
                     {
-                        await this.DownloadFile(AllData[li], "../../../../destination");
+                        await this.DownloadFile();
                     }));
                 }
             }

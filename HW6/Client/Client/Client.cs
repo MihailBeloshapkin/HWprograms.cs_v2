@@ -26,10 +26,10 @@ namespace Gui
         /// </summary>
         public async Task Get(string path, string destination)
         {
-            var client = new TcpClient(host, port);
-            var stream = client.GetStream();
-            var reader = new StreamReader(stream);
-            var writer = new StreamWriter(stream) { AutoFlush = true };
+            using var client = new TcpClient(host, port);
+            using var stream = client.GetStream();
+            using var reader = new StreamReader(stream);
+            using var writer = new StreamWriter(stream) { AutoFlush = true };
             await writer.WriteLineAsync($"2 {path}");
 
             var size = new char[long.MaxValue.ToString().Length + 1];
@@ -75,13 +75,13 @@ namespace Gui
             var reader = new StreamReader(stream);
 
             await writer.WriteLineAsync($"1 {path}");
-            var responce = await reader.ReadLineAsync();
-            if (responce == "-1")
+            var response = await reader.ReadLineAsync();
+            if (response == "-1")
             {
                 throw new Exception("Directory not found");
             }
 
-            var responceSplit = responce.Split(' ');
+            var responceSplit = response.Split(' ');
             var size = int.Parse(responceSplit[0]);
 
             var result = new List<(string, bool)>();
@@ -89,7 +89,6 @@ namespace Gui
             for (int iter = 0; iter * 2 + 2 < responceSplit.Length; iter++)
             {
                 var fullPath = responceSplit[iter * 2 + 1];
-             //   var isDir = responceSplit[iter * 2 + 2];
                 var isDir = Convert.ToBoolean(responceSplit[iter * 2 + 2]);
                 result.Add((fullPath, isDir));
             }
