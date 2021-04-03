@@ -1,0 +1,64 @@
+@using MyNUnitWeb.Models;
+@model IEnumerable<MyNUnitWeb.Models.TestReportModel>
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Archive</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+</head>
+<body>
+    <main role="main" style="margin-top: 10rem">
+        <div class="col-sm">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Result</thscope="col">
+                        <th scope="col">Ignore reason</th>
+                        <th scope="col">Time</th>
+                    </tr>
+                </thead>                  
+                <tbody>
+                    @foreach (MyNUnitWeb.Models.TestReportModel p in Model)
+                    {
+                        var result = "";
+                        var ignoreReason = "";
+                        var time = "";
+                        if (p.Passed == true)
+                        {
+                            result = "Success";
+                            time = p.Time.ToString();
+                        }
+                        if (p.Passed == false)
+                        {
+                            result = "Failed";
+                            time = p.Time.ToString();
+                        }
+                        if (p.Passed == null)
+                        {
+                            ignoreReason = p.WhyIgnored;
+                            result = "Ignored";
+                        }
+                        <tr>
+                            <td>@p.Name</td>
+                            <td>@result</td>
+                            <td>@ignoreReason</td>
+                            <td>@time</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </body>
+</html>

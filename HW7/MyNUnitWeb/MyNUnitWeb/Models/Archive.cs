@@ -4,10 +4,12 @@ namespace MyNUnitWeb.Models
 {
     public class Archive : DbContext
     {
-        public DbSet<TestReportModel> reports { get; set; }
+        public Archive(DbContextOptions<Archive> options)
+                : base(options)
+        {
+        }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Archive;Trusted_Connection=True;");
+        public DbSet<TestReportModel> reports { get; set; }
     }
 }
 

@@ -21,20 +21,18 @@ namespace MyNUnitWeb.Controllers
         private readonly CurrentStateModel currentState;
         private AssemblyReportModel currentAssembly;
         private TestInfoContainer infoContainer;
-        private string pathToAssemblies;
+        private Archive archive;
 
-        public HomeController(IWebHostEnvironment environment)
+        public HomeController(IWebHostEnvironment environment, Archive context)
         {
             this.environment = environment;
-            /* if (!Directory.Exists($"{this.environment.WebRootPath}/Temp)"))
-                 {
-                     Directory.CreateDirectory($"{this.environment.WebRootPath}/Temp");
-                 }
-              /*   this.environment = environment;
-                 this.pathToAssemblies = Path.Combine(this.environment.WebRootPath, "Assemblies");
-                 this.currentState = new CurrentStateModel(environment); */
-            this.currentAssembly = new AssemblyReportModel();
+            if (!Directory.Exists($"{this.environment.WebRootPath}/Temp)"))
+            {
+                Directory.CreateDirectory($"{this.environment.WebRootPath}/Temp");
+            }
+       
             this.infoContainer = new TestInfoContainer();
+            this.archive = context;
             this.currentState = new CurrentStateModel(environment);
         }
 
@@ -42,6 +40,12 @@ namespace MyNUnitWeb.Controllers
         public IActionResult Index()
         {
             return View("Index", infoContainer.TestReports);
+        }
+
+        [HttpGet]
+        public IActionResult Archive()
+        {
+            return View("Archive", archive.reports);
         }
 
         [HttpPost]
@@ -66,12 +70,15 @@ namespace MyNUnitWeb.Controllers
             nunit.Execute();
             var results = nunit.GetAllData();
             var assemblyReport = new AssemblyReportModel();
+            var idPart = DateTime.Now;
+
             foreach (var test in results)
             {
                 var currentReport = new TestReportModel();
                 currentReport.Name = test.Name;
                 currentReport.Time = test.TimeOfExecution;
                 currentReport.WhyIgnored = test.WhyIgnored;
+                currentReport.Id = idPart.ToString() + test.Name;
                 if (test.Result == "Success")
                 {
                     currentReport.Passed = true;
@@ -88,6 +95,8 @@ namespace MyNUnitWeb.Controllers
                     assemblyReport.Ignored++;
                 }
                 infoContainer.TestReports.Add(currentReport);
+                archive.Add(currentReport);
+                archive.SaveChanges();
                 assemblyReport.TestReports.Add(currentReport);
                 
             }
