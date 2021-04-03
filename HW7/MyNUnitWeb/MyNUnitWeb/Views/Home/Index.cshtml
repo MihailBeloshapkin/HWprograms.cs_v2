@@ -37,6 +37,7 @@
                         <th scope="col">Result</thscope="col">
                         <th scope="col">Ignore reason</th>
                         <th scope="col">Time</th>
+                        <th scope="col">Assembly</th>
                     </tr>
                 </thead>
 
@@ -62,10 +63,11 @@
                             result = "Ignored";
                         }
                         <tr>
-                            <td>@p.Name</td>
+                            <td>@p.Name.Split(',')[2]</td>
                             <td>@result</td>
                             <td>@ignoreReason</td>
                             <td>@time</td>
+                            <td>@p.Name.Split(',')[0]</td>
                         </tr>
                     }
                 </tbody>

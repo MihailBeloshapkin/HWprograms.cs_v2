@@ -78,7 +78,7 @@ namespace MyNUnitWeb.Controllers
                 currentReport.Name = test.Name;
                 currentReport.Time = test.TimeOfExecution;
                 currentReport.WhyIgnored = test.WhyIgnored;
-                currentReport.Id = idPart.ToString() + test.Name;
+                currentReport.Id = idPart.ToString() + '%' + test.Name;
                 if (test.Result == "Success")
                 {
                     currentReport.Passed = true;

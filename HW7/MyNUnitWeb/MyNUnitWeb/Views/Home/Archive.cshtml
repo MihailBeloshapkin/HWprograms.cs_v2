@@ -26,6 +26,8 @@
                         <th scope="col">Result</thscope="col">
                         <th scope="col">Ignore reason</th>
                         <th scope="col">Time</th>
+                        <th scope="col">Assembly</th>
+                        <th scope="col">When:</th>
                     </tr>
                 </thead>                  
                 <tbody>
@@ -49,11 +51,22 @@
                             ignoreReason = p.WhyIgnored;
                             result = "Ignored";
                         }
+                        var whenExecuted = "";
+                        try
+                        {
+                            whenExecuted = p.Id.Split('%')[0];
+                        }
+                        catch (Exception)
+                        {
+                            whenExecuted = "No data";
+                        }
                         <tr>
-                            <td>@p.Name</td>
+                            <td>@p.Name.Split(',')[2]</td>
                             <td>@result</td>
                             <td>@ignoreReason</td>
                             <td>@time</td>
+                            <td>@p.Name.Split(',')[0]</td>
+                            <td>@whenExecuted</td>
                         </tr>
                         }
                     </tbody>

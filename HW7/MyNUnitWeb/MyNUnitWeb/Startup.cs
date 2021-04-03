@@ -27,7 +27,7 @@ namespace MyNUnitWeb
         {
             services.AddControllersWithViews();
             services.AddDbContext<Archive>(options =>
-                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Archive;Trusted_Connection=True;"));
+                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=TestArchive;Trusted_Connection=True;"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
