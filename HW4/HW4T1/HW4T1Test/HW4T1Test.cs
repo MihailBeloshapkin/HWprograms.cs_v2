@@ -24,6 +24,7 @@ namespace HW4T1Test
         public void Teardown()
         {
             server.ShutDown();
+            
         }
 
         [Test]
