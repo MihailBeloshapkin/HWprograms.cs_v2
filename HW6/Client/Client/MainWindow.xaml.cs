@@ -32,9 +32,9 @@ namespace Gui
             Downloading.ItemsSource = viewModel.Downloads;
         }
 
-        private void Connect_Click(object sender, RoutedEventArgs e)
+        private async void Connect_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.EstablishConnection();
+            await viewModel.EstablishConnection();
         }
 
         private void Download_Click(object sender, RoutedEventArgs e)
@@ -42,9 +42,9 @@ namespace Gui
             _ = viewModel.DownloadFile();
         }
 
-        private void Show_Click(object sender, RoutedEventArgs e)
+        private async void Show_Click(object sender, RoutedEventArgs e)
         {
-            this.viewModel.UpdateList();
+            await this.viewModel.UpdateList();
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
@@ -57,8 +57,8 @@ namespace Gui
             this.viewModel.GetIntoFolder(selected);
         }
 
-        private void Download_All_Click(object sender, RoutedEventArgs e)
-            => this.viewModel.DownloadAll();
+        private async void Download_All_Click(object sender, RoutedEventArgs e)
+            => await this.viewModel.DownloadAll();
         
     }
 }

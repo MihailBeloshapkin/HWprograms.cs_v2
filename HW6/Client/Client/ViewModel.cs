@@ -11,6 +11,9 @@ using HW6T1;
 
 namespace Gui
 {
+    /// <summary>
+    /// View Model for client gui.
+    /// </summary>
     public class ViewModel : INotifyPropertyChanged
     {
         private string ip;
@@ -120,7 +123,7 @@ namespace Gui
         /// <summary>
         /// Establish connection.
         /// </summary>
-        public void EstablishConnection()
+        public async Task EstablishConnection()
         {
             try
             {
@@ -133,13 +136,13 @@ namespace Gui
                 return;
             }
             _ = server.Process();
-            UpdateList();
+            await UpdateList();
         }
 
         /// <summary>
         /// Update list of files and folders.
         /// </summary>
-        public async void UpdateList()
+        public async Task UpdateList()
         {
             this.AllData.Clear();
             if (serverPath == "")
@@ -225,6 +228,26 @@ namespace Gui
             }
         }
 
+        private async Task DownloadFromTo(string downloadFrom, string downloadTo)
+        {
+            try
+            {
+                if (!Directory.Exists(downloadTo))
+                {
+                    Directory.CreateDirectory(downloadTo);
+                }
+                this.Downloads.Add(Path.GetFileName(downloadFrom) + "installing");
+
+                await client.Get(downloadFrom, downloadTo);
+                this.Downloads.Remove(Path.GetFileName(downloadFrom) + "installing");
+                this.Downloads.Add(Path.GetFileName(downloadFrom));
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show("You are not connected to the server");
+            }
+        }
+
         /// <summary>
         /// Download all from the current directory.
         /// </summary>
@@ -244,16 +267,15 @@ namespace Gui
                     }
                     tasks.Add(new Task(async () =>
                     {
-                        await this.DownloadFile();
+                        await this.DownloadFromTo(this.downloadFrom, this.downloadTo);
                     }));
                 }
             }
-
             foreach (var item in tasks)
             {
                 item.RunSynchronously();
             }
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
     }
 }
