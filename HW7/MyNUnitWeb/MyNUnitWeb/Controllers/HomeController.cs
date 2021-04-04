@@ -50,15 +50,6 @@ namespace MyNUnitWeb.Controllers
             return View("Archive", archive.reports);
         }
 
-        public IActionResult Delete()
-        {
-            foreach (var file in Directory.GetFiles($"{environment.WebRootPath}/Temp"))
-            {
-                System.IO.File.Delete(file);
-            }
-            return RedirectToAction("Index", infoContainer.TestReports);
-        }
-
         [HttpPost]
         public IActionResult AddAssembly(IFormFile file)
         {
