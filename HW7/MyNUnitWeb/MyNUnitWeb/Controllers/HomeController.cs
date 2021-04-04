@@ -4,11 +4,13 @@ using MyNUnitWeb.Models;
 using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MyNUnitWeb.Models;
-using System;
 using System.Collections.Generic;
+using System;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Threading.Tasks;
 using HW5T1;
 using System.Linq;
@@ -48,12 +50,25 @@ namespace MyNUnitWeb.Controllers
             return View("Archive", archive.reports);
         }
 
+        public IActionResult Delete()
+        {
+            foreach (var file in Directory.GetFiles($"{environment.WebRootPath}/Temp"))
+            {
+                System.IO.File.Delete(file);
+            }
+            return RedirectToAction("Index", infoContainer.TestReports);
+        }
+
         [HttpPost]
         public IActionResult AddAssembly(IFormFile file)
         {
             if (file == null)
                 return View(infoContainer.TestReports);
-
+            
+            if (Directory.Exists($"{environment.WebRootPath}/Temp/{file.FileName}"))
+            {
+                return RedirectToAction("Index", infoContainer.TestReports);
+            }
             using (var fileStream = new FileStream($"{environment.WebRootPath}/Temp/{file.FileName}", FileMode.Create))
             {
                 file.CopyTo(fileStream);
@@ -61,7 +76,6 @@ namespace MyNUnitWeb.Controllers
             return RedirectToAction("Index", infoContainer.TestReports);
         }
         
-
 
         [HttpPost]
         public IActionResult ExecuteTests()

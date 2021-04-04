@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
 </head>
 <body>
+    <a asp-action="Index">Get back</a>
     <main role="main" style="margin-top: 10rem">
         <div class="col-sm">
             <table class="table table-bordered">
@@ -29,7 +30,7 @@
                         <th scope="col">Assembly</th>
                         <th scope="col">When:</th>
                     </tr>
-                </thead>                  
+                </thead>
                 <tbody>
                     @foreach (MyNUnitWeb.Models.TestReportModel p in Model)
                     {
@@ -68,10 +69,10 @@
                             <td>@p.Name.Split(',')[0]</td>
                             <td>@whenExecuted</td>
                         </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </body>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
 </html>
