@@ -51,6 +51,16 @@ namespace MyNUnitWeb.Controllers
         }
 
         [HttpPost]
+        public IActionResult Delete()
+        {
+            foreach (var file in Directory.GetFiles($"{environment.WebRootPath}/Temp"))
+            {
+                System.IO.File.Delete(file);
+            }
+            return RedirectToAction("Index", infoContainer.TestReports);
+        }
+
+        [HttpPost]
         public IActionResult AddAssembly(IFormFile file)
         {
             if (file == null)
@@ -63,7 +73,9 @@ namespace MyNUnitWeb.Controllers
             using (var fileStream = new FileStream($"{environment.WebRootPath}/Temp/{file.FileName}", FileMode.Create))
             {
                 file.CopyTo(fileStream);
+                fileStream.Dispose();
             }
+            
             return RedirectToAction("Index", infoContainer.TestReports);
         }
         
