@@ -8,12 +8,12 @@ namespace Injector
     {
         public class A
         {
-            public A(B x) { }
+            public A(C x, B y) { }
         }
 
         public class B
         {
-            public B(C x, D y) { }
+            public B(C x) { }
         }
 
         public class C
@@ -26,10 +26,20 @@ namespace Injector
             public D() { }
         }
 
+        public class X
+        {
+            public X(Y a, Y b) { }
+        }
+
+        public class Y
+        {
+            public Y() { }
+        }
+
 
         static void Main(string[] args)
         {
-            var objectA = Reflect.Initialize(typeof(A), new List<Type> { typeof(B), typeof(C), typeof(D) });
+            var objectA = Reflect.Initialize(typeof(X), new List<Type> { typeof(Y), typeof(Y) });
         }
     }
 }

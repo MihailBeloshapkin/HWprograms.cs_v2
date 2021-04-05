@@ -59,10 +59,6 @@ namespace Injector
                 }
                 answer = arg;
             }
-            if (countOfRealisations > 1)
-            {
-                throw new Exception($"More than one realization of class {arg.Name}");
-            }
             if (countOfRealisations < 1)
             {
                 throw new Exception($"No realization for class {arg.Name}");
@@ -75,13 +71,13 @@ namespace Injector
         /// </summary>
         public static Object Initialize(Type root, List<Type> examples)
         {
-            return localInitialize(root, examples, null);
+            return LocalInitialize(root, examples, null);
         }
 
         /// <summary>
         /// Create instance of an object. Recursive initialization.
         /// </summary>
-        private static Object localInitialize(Type root, List<Type> examples, List<Type> prevDependencies)
+        private static Object LocalInitialize(Type root, List<Type> examples, List<Type> prevDependencies)
         {
             ConstructorInfo[] con = root.GetConstructors();
 
@@ -111,7 +107,8 @@ namespace Injector
                 var instanceType = SearchRealisation(arg, examples);
                 examples.Remove(instanceType);
                 prevDependencies.Add(instanceType);
-                var instance = localInitialize(instanceType, examples, prevDependencies);
+                var instance = LocalInitialize(instanceType, examples, prevDependencies);
+                prevDependencies.Remove(instanceType);
                 createdObjects.Add(instance);
             }
             ConstructorInfo information = root.GetConstructor(argTypeList.ToArray());
