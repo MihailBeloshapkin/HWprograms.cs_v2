@@ -71,22 +71,28 @@ namespace Injector
         /// </summary>
         public static Object Initialize(Type root, List<Type> examples)
         {
-            return LocalInitialize(root, examples, null);
+            var activated = new Dictionary<Type, object>();
+            return LocalInitialize(root, examples, ref activated, null);
         }
 
         /// <summary>
         /// Create instance of an object. Recursive initialization.
         /// </summary>
-        private static Object LocalInitialize(Type root, List<Type> examples, List<Type> prevDependencies)
+        private static Object LocalInitialize(Type root, List<Type> examples, ref Dictionary<Type, Object> activated, List<Type> prevDependencies)
         {
             ConstructorInfo[] con = root.GetConstructors();
 
             var argTypeList = new List<Type>();
 
+            if (activated == null)
+            {
+                activated = new Dictionary<Type, object>();
+            }
             if (prevDependencies == null)
             {
                 prevDependencies = new List<Type>();
             }
+            
             // Get constructor arguments.
             ParameterInfo[] parameters = con[0].GetParameters();
             for (int i = 0; i < parameters.Length; i++)
@@ -104,12 +110,20 @@ namespace Injector
 
             foreach (var arg in argTypeList)
             {
-                var instanceType = SearchRealisation(arg, examples);
-                examples.Remove(instanceType);
-                prevDependencies.Add(instanceType);
-                var instance = LocalInitialize(instanceType, examples, prevDependencies);
-                prevDependencies.Remove(instanceType);
-                createdObjects.Add(instance);
+                if (activated.ContainsKey(arg))
+                {
+                    createdObjects.Add(activated[arg]);
+                }
+                else
+                {
+                    var instanceType = SearchRealisation(arg, examples);
+                    examples.Remove(instanceType);
+                    prevDependencies.Add(instanceType);
+                    var instance = LocalInitialize(instanceType, examples, ref activated, prevDependencies);
+                    prevDependencies.Remove(instanceType);
+                    activated.Add(instanceType, instance);
+                    createdObjects.Add(instance);
+                }
             }
             ConstructorInfo information = root.GetConstructor(argTypeList.ToArray());
             return information.Invoke(createdObjects.ToArray());
