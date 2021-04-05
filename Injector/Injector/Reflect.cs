@@ -63,6 +63,10 @@ namespace Injector
             {
                 throw new Exception($"No realization for class {arg.Name}");
             }
+            if (countOfRealisations > 1)
+            {
+                throw new Exception($"Class {arg.Name} has more than one realization");
+            }
             return answer;
         }
 
