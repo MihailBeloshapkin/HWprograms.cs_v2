@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HW4T1
 {
     /// <summary>
-    /// Client realization.
+    /// Client realization for our FTP server.
     /// </summary>
     public class Client
     {
@@ -26,9 +26,9 @@ namespace HW4T1
         public async Task Get(string path, string destination)
         {
             using var client = new TcpClient(host, port);
-            var stream = client.GetStream();
-            var reader = new StreamReader(stream);
-            var writer = new StreamWriter(stream) { AutoFlush = true };
+            using var stream = client.GetStream();
+            using var reader = new StreamReader(stream);
+            using var writer = new StreamWriter(stream) { AutoFlush = true };
             await writer.WriteLineAsync($"2 {path}");
 
             var size = new char[long.MaxValue.ToString().Length + 1];
@@ -60,6 +60,10 @@ namespace HW4T1
                 sizeLong -= maxBufferSize;
             }
             await reader.ReadLineAsync();
+            client.Dispose();
+            stream.Dispose();
+            reader.Dispose();
+            writer.Dispose();
         }
         
         /// <summary>
@@ -67,10 +71,10 @@ namespace HW4T1
         /// </summary>
         public async Task<List<(string, bool)>> List(string path)
         {
-            var client = new TcpClient(host, port);
+            using var client = new TcpClient(host, port);
             using var stream = client.GetStream();
-            var writer = new StreamWriter(stream) { AutoFlush = true };
-            var reader = new StreamReader(stream);
+            using var writer = new StreamWriter(stream) { AutoFlush = true };
+            using var reader = new StreamReader(stream);
 
             await writer.WriteLineAsync($"1 {path}");
             var response = await reader.ReadLineAsync();
@@ -90,6 +94,10 @@ namespace HW4T1
                 var isDir = Convert.ToBoolean(responceSplit[iter * 2 + 2]);
                 result.Add((fullPath, isDir));
             }
+            client.Dispose();
+            stream.Dispose();
+            reader.Dispose();
+            writer.Dispose();
             return result;
         }
     }

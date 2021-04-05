@@ -32,7 +32,7 @@ namespace HW4T1
             }
         }
 
-        public void  ShutDown()
+        public void ShutDown()
             => this.listener.Stop();
 
         /// <summary>
