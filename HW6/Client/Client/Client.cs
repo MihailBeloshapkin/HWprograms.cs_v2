@@ -73,7 +73,6 @@ namespace Gui
         /// </summary>
         public async Task<List<(string, bool)>> List(string path)
         {
-            path = "../../../../";
             using var client = new TcpClient(host, port);
             using var stream = client.GetStream();
             using var writer = new StreamWriter(stream) { AutoFlush = true };

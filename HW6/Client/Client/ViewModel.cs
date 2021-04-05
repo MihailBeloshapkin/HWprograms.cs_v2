@@ -39,6 +39,20 @@ namespace Gui
         /// </summary>
         public ObservableCollection<string> AllData { get; set; } = new ObservableCollection<string>();
 
+        private string selectedFolder;
+
+        public string SelectedFolder
+        {
+            get => this.selectedFolder;
+            set
+            {
+                this.selectedFolder = value;
+                OnPropertyChanged("SelectedFolder");
+            }
+        }
+           
+
+
         /// <summary>
         /// In case if we want to download file we should specify the DownloadFrom path.
         /// </summary>
@@ -63,7 +77,6 @@ namespace Gui
                 this.downloadTo = value;
                 OnPropertyChanged("DownloadTo");
             }
-        
         }
 
         /// <summary>
@@ -125,6 +138,7 @@ namespace Gui
             }
         }
 
+        
         /// <summary>
         /// Establish connection.
         /// </summary>
@@ -137,12 +151,14 @@ namespace Gui
             catch (FormatException)
             {
                 MessageBox.Show("Incorrect input!");
+                return;
             }
             catch (Exception)
             {
                 MessageBox.Show("Connection failed!");
                 return;
             }
+            
             await UpdateList();
         }
 
@@ -184,11 +200,11 @@ namespace Gui
         /// <summary>
         /// Simple file system navigation. 
         /// </summary>
-        public async void GetIntoFolder(string path)
+        public async void GetIntoFolder()
         {
             try
             {
-                var data = await this.client.List(path);
+                var data = await this.client.List(this.selectedFolder);
                 var arch = new ObservableCollection<string>();
                 foreach (var item in this.AllData)
                 {
