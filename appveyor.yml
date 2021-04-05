@@ -6,3 +6,6 @@ before_build:
 build_script:
   - dotnet build Injector\Injector.sln
 
+test_script:
+  - dotnet test Injector\Injector.sln
+
