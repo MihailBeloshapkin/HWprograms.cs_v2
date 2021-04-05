@@ -18,7 +18,6 @@ namespace Gui
     {
         private string ip;
         private string port;
-        private Server server;
         private Client client;
         public event PropertyChangedEventHandler PropertyChanged;
         private string serverPath;
@@ -88,8 +87,15 @@ namespace Gui
             get => this.ip;
             set
             {
-                ip = value;
-                OnPropertyChanged("Ip");
+                if (this.client == null)
+                {
+                    ip = value;
+                    OnPropertyChanged("Ip");
+                }
+                else
+                {
+                    MessageBox.Show("Unable to change connection.");
+                }
             }
         }
 
@@ -155,6 +161,11 @@ namespace Gui
             try
             {
                 updatedData = await this.client.List(serverPath);
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show("Impossible to connect.");
+                return;
             }
             catch (Exception e)
             {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gui" d:DataContext="{d:DesignInstance Type=local:ViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="470" Width="900" MinHeight="400" MinWidth="400">
+        Title="MainWindow" Height="470" Width="900" MinHeight="400" MinWidth="500">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -47,7 +47,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="1" >
                     <Label Content="Show content from:"/>
-                    <TextBox Text="{Binding Path=ServerPath, Mode=TwoWay}"/>
+                    <TextBox MinWidth="120" Text="{Binding Path=ServerPath, Mode=TwoWay}"/>
                 </StackPanel>
                 <Button Content="connect" Grid.Column="4" Grid.Row="1" Click="Connect_Click"/>
                 <Button Content="Show data" Grid.Column="2" Grid.Row="1" Click="Show_Click"/>
