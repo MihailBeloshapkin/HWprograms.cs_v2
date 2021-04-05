@@ -236,11 +236,8 @@ namespace Gui
                 {
                     Directory.CreateDirectory(downloadTo);
                 }
-                this.Downloads.Add(Path.GetFileName(downloadFrom) + "installing");
-
+                
                 await client.Get(downloadFrom, downloadTo);
-                this.Downloads.Remove(Path.GetFileName(downloadFrom) + "installing");
-                this.Downloads.Add(Path.GetFileName(downloadFrom));
             }
             catch (SocketException)
             {
@@ -265,15 +262,8 @@ namespace Gui
                     {
                         Directory.CreateDirectory(downloadTo);
                     }
-                    tasks.Add(new Task(async () =>
-                    {
-                        await this.DownloadFromTo(this.downloadFrom, this.downloadTo);
-                    }));
+                    await Task.Run(() => this.DownloadFromTo(this.downloadFrom, "../../../../destination"));
                 }
-            }
-            foreach (var item in tasks)
-            {
-                item.RunSynchronously();
             }
             await Task.CompletedTask;
         }

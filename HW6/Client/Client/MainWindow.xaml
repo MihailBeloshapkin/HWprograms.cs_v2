@@ -38,15 +38,15 @@
 
                 <StackPanel Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="208,0,0,0">
                     <Label Content="IP:"/>
-                    <TextBox x:Name="infoIP" MinWidth="200" Text="{Binding Path=Ip, Mode=TwoWay}"/>
+                    <TextBox MinWidth="200" Text="{Binding Path=Ip, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Grid.ColumnSpan="3" Grid.RowSpan="3" Margin="208,49,0,0">
                     <Label Content="Port:"/>
-                    <TextBox x:Name="infoPort" MinWidth="200" Text="{Binding Path=Port, Mode=TwoWay}"/>
+                    <TextBox MinWidth="200" Text="{Binding Path=Port, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3"  Grid.RowSpan="3" Margin="208,49,0,0">
                     <Label Content="Show content from:"/>
-                    <TextBox x:Name="showContent" MinWidth="200" Text="{Binding Path=ServerPath, Mode=TwoWay}"/>
+                    <TextBox MinWidth="200" Text="{Binding Path=ServerPath, Mode=TwoWay}"/>
                 </StackPanel>
                 <Button x:Name="Connect" Content="connect" Grid.Column="4" Grid.Row="0" Grid.RowSpan="2" Click="Connect_Click" Margin="14,15,15,15" />
                 <Button x:Name="Show" Content="Show data" Grid.Column="4" Grid.Row="2" Click="Show_Click" Margin="14,15,15,15"/>
