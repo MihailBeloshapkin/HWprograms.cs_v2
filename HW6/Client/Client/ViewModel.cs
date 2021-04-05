@@ -160,7 +160,8 @@ namespace Gui
             List<(string, bool)> updatedData;
             try
             {
-                updatedData = await this.client.List(serverPath);
+                var pathToServer = serverPath;
+                updatedData = await this.client.List(pathToServer);
             }
             catch (SocketException)
             {
