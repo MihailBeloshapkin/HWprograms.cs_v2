@@ -24,8 +24,6 @@ namespace SuccessTests
         {
             int number = 30;
             number += 239;
-            int a = 0;
-            int b = 7 / a;
         }
 
         [After]

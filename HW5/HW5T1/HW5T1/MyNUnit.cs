@@ -111,14 +111,14 @@ namespace HW5T1
             var instance = Activator.CreateInstance(type);
 
             var exceptionBefore = this.TryToExecuteAfterOrBeforeTest(instance, this.methods.Before);
-            if (exceptionBefore != null)
+            if (exceptionBefore != "")
             {
                 queue.Enqueue(new TestData(method.Name, false, exceptionBefore, 0));
                 return;
             }
 
             var stopWatch = new Stopwatch();
-
+            string exceptionAfter = "";
             try
             {
                 stopWatch.Start();
@@ -128,28 +128,30 @@ namespace HW5T1
             catch (Exception e)
             {
                 stopWatch.Stop();
-                if (e.InnerException.GetType() == property.Expected)
+                exceptionAfter = this.TryToExecuteAfterOrBeforeTest(instance, this.methods.After);
+
+                if (e.InnerException.GetType() == property.Expected && exceptionAfter == "")
                 {
                     queue.Enqueue(new TestData(method.Name, true, e.Message, stopWatch.ElapsedMilliseconds));
                 }
                 else
                 {
-                    queue.Enqueue(new TestData(method.Name, false, e.Message, stopWatch.ElapsedMilliseconds));
+                    queue.Enqueue(new TestData(method.Name, false, e.Message + exceptionAfter, stopWatch.ElapsedMilliseconds));
                 }
 
-                this.TryToExecuteAfterOrBeforeTest(instance, this.methods.After);
                 return;
             }
 
             if (property.Expected != null)
             {
+                exceptionAfter = this.TryToExecuteAfterOrBeforeTest(instance, this.methods.After);
                 queue.Enqueue(new TestData(method.Name, false, 
-                    $"Test did not throw an exception: {property.Expected.ToString()}", stopWatch.ElapsedMilliseconds));
+                    $"Test did not throw an exception: {property.Expected.ToString()}" + exceptionAfter, stopWatch.ElapsedMilliseconds));
                 return;
             }
 
-            var exceptionAfter = this.TryToExecuteAfterOrBeforeTest(instance, methods.After);
-            if (exceptionAfter != null)
+            exceptionAfter = this.TryToExecuteAfterOrBeforeTest(instance, methods.After);
+            if (exceptionAfter != "")
             {
                 queue.Enqueue(new TestData(method.Name, false, exceptionAfter, 0));
                 return;
@@ -221,7 +223,7 @@ namespace HW5T1
                     return e.Message;
                 }
             }
-            return null;
+            return "";
         }
 
         private bool TryToExecuteBeforeClassOrAfterClassTest(ConcurrentQueue<TestData> testInfo, List<MethodInfo> methods)
