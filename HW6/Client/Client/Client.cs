@@ -61,6 +61,10 @@ namespace Gui
                 sizeLong -= maxBufferSize;
             }
             await reader.ReadLineAsync();
+            client.Dispose();
+            stream.Dispose();
+            reader.Dispose();
+            writer.Dispose();
         }
 
 
@@ -69,10 +73,10 @@ namespace Gui
         /// </summary>
         public async Task<List<(string, bool)>> List(string path)
         {
-            var client = new TcpClient(host, port);
+            using var client = new TcpClient(host, port);
             using var stream = client.GetStream();
-            var writer = new StreamWriter(stream) { AutoFlush = true };
-            var reader = new StreamReader(stream);
+            using var writer = new StreamWriter(stream) { AutoFlush = true };
+            using var reader = new StreamReader(stream);
 
             await writer.WriteLineAsync($"1 {path}");
             var response = await reader.ReadLineAsync();
@@ -92,6 +96,10 @@ namespace Gui
                 var isDir = Convert.ToBoolean(responceSplit[iter * 2 + 2]);
                 result.Add((fullPath, isDir));
             }
+            client.Dispose();
+            stream.Dispose();
+            reader.Dispose();
+            writer.Dispose();
             return result;
         }
 

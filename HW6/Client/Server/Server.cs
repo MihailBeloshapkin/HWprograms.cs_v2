@@ -50,23 +50,28 @@ namespace HW6T1
         /// </summary>
         private async Task Run(TcpClient client)
         {
-            using var stream = client.GetStream();
-
-            var reader = new StreamReader(stream);
-            var writer = new StreamWriter(stream) { AutoFlush = true };
-            var data = await reader.ReadLineAsync();
-            var (command, path) = GetCommandAndPath(data);
-
-            switch (command)
+            using (client)
             {
-                case "1":
-                    await this.List(path, writer);
-                    break;
-                case "2":
-                    await this.Get(path, writer);
-                    break;
-                default:
-                    throw new ArgumentException("Incorrect request!");
+                using var stream = client.GetStream();
+                using var reader = new StreamReader(stream);
+                using var writer = new StreamWriter(stream) { AutoFlush = true };
+                var data = await reader.ReadLineAsync();
+                var (command, path) = this.GetCommandAndPath(data);
+
+                switch (command)
+                {
+                    case "1":
+                        await this.List(path, writer);
+                        break;
+                    case "2":
+                        await this.Get(path, writer);
+                        break;
+                    default:
+                        throw new ArgumentException("Incorrect request!");
+                }
+                stream.Dispose();
+                reader.Dispose();
+                writer.Dispose();
             }
         }
 

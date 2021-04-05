@@ -104,7 +104,6 @@ namespace Gui
                 port = value;
                 OnPropertyChanged("Port");
             }
-        
         }
 
         public ViewModel()
@@ -127,15 +126,17 @@ namespace Gui
         {
             try
             {
-                this.server = new Server(ip, int.Parse(port));
                 this.client = new Client(ip, int.Parse(port));
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Incorrect input!");
             }
             catch (Exception)
             {
-                MessageBox.Show("Connection failed");
+                MessageBox.Show("Connection failed!");
                 return;
             }
-            _ = server.Process();
             await UpdateList();
         }
 
@@ -145,12 +146,21 @@ namespace Gui
         public async Task UpdateList()
         {
             this.AllData.Clear();
-            if (serverPath == "")
+            if (serverPath == "" || this.serverPath == null)
             {
                 MessageBox.Show("Input path!");
                 return;
             }
-            var updatedData = await this.client.List(serverPath);
+            List<(string, bool)> updatedData;
+            try
+            {
+                updatedData = await this.client.List(serverPath);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return;
+            }
             foreach (var item in updatedData)
             {
                 this.AllData.Add(item.Item1);
@@ -236,7 +246,6 @@ namespace Gui
                 {
                     Directory.CreateDirectory(downloadTo);
                 }
-                
                 await client.Get(downloadFrom, downloadTo);
             }
             catch (SocketException)
@@ -265,7 +274,6 @@ namespace Gui
                     await Task.Run(() => this.DownloadFromTo(this.downloadFrom, "../../../../destination"));
                 }
             }
-            await Task.CompletedTask;
         }
     }
 }

@@ -43,9 +43,8 @@ namespace Gui
         }
 
         private async void Show_Click(object sender, RoutedEventArgs e)
-        {
-            await this.viewModel.UpdateList();
-        }
+            => await this.viewModel.UpdateList();
+        
 
         private void Back_Click(object sender, RoutedEventArgs e)
             => this.viewModel.Back();
