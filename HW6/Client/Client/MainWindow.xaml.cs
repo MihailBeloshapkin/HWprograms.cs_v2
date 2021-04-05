@@ -26,9 +26,6 @@ namespace Gui
         {
             InitializeComponent();
             this.viewModel = new ViewModel();
-        
-        //    dataBox.ItemsSource = viewModel.AllData;
-            Downloading.ItemsSource = viewModel.Downloads;
         }
 
         private async void Connect_Click(object sender, RoutedEventArgs e)
@@ -49,8 +46,7 @@ namespace Gui
 
         private void GetIntoFolder(object sender, MouseButtonEventArgs e)
         {
-            var selected = dataBox.SelectedItem.ToString();
-            this.viewModel.GetIntoFolder(selected);
+            this.viewModel.GetIntoFolder();
         }
 
         private async void Download_All_Click(object sender, RoutedEventArgs e)
