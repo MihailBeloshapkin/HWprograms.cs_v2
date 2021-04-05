@@ -45,9 +45,8 @@ namespace Gui
         
 
         private void GetIntoFolder(object sender, MouseButtonEventArgs e)
-        {
-            this.viewModel.GetIntoFolder();
-        }
+            => this.viewModel.GetIntoFolder();
+        
 
         private async void Download_All_Click(object sender, RoutedEventArgs e)
             => await this.viewModel.DownloadAll();
