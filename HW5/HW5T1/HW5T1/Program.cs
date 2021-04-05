@@ -7,14 +7,14 @@ namespace HW5T1
     class Program
     {
         static async Task Main(string[] args)
-        {/*
+        {
             if (args.Length != 1)
             {
                 throw new ArgumentException();
-            }*/
+            }
             try
             {
-                var nunit = new MyNUnit("../../../../SuccessTests");
+                var nunit = new MyNUnit(args[0]);
                 nunit.Execute();
                 nunit.DisplayResults();
             }

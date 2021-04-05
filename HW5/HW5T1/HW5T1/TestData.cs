@@ -4,6 +4,13 @@ using System.Text;
 
 namespace HW5T1
 {
+    public enum Result
+    { 
+        Success,
+        Failed,
+        Ignored
+    }
+
     public class TestData
     {
         /// <summary>
@@ -14,7 +21,7 @@ namespace HW5T1
         /// <summary>
         /// Result of test.
         /// </summary>
-        public bool? Result { get; private set; }
+        public Result Result { get; private set; }
 
         /// <summary>
         /// The reason why test wass ignored.
@@ -26,7 +33,7 @@ namespace HW5T1
         /// </summary>
         public long TimeOfExecution { get; private set; }
 
-        public TestData(string name, bool? result, string whyIgnored, long timeOfExecution)
+        public TestData(string name, Result result, string whyIgnored, long timeOfExecution)
         {
             this.Name = name;
             this.Result = result;

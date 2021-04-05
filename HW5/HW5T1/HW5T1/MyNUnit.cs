@@ -104,7 +104,7 @@ namespace HW5T1
             var property = (Test)Attribute.GetCustomAttribute(method, typeof(Test));
             if (property.Ignore != null)
             {
-                queue.Enqueue(new TestData(method.Name, null, property.Ignore, 0));
+                queue.Enqueue(new TestData(method.Name, Result.Ignored, property.Ignore, 0));
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace HW5T1
             var exceptionBefore = this.TryToExecuteAfterOrBeforeTest(instance, this.methods.Before);
             if (exceptionBefore != "")
             {
-                queue.Enqueue(new TestData(method.Name, false, exceptionBefore, 0));
+                queue.Enqueue(new TestData(method.Name, Result.Failed, exceptionBefore, 0));
                 return;
             }
 
@@ -132,11 +132,11 @@ namespace HW5T1
 
                 if (e.InnerException.GetType() == property.Expected && exceptionAfter == "")
                 {
-                    queue.Enqueue(new TestData(method.Name, true, e.Message, stopWatch.ElapsedMilliseconds));
+                    queue.Enqueue(new TestData(method.Name, Result.Success, e.Message, stopWatch.ElapsedMilliseconds));
                 }
                 else
                 {
-                    queue.Enqueue(new TestData(method.Name, false, e.Message + exceptionAfter, stopWatch.ElapsedMilliseconds));
+                    queue.Enqueue(new TestData(method.Name, Result.Failed, e.Message + exceptionAfter, stopWatch.ElapsedMilliseconds));
                 }
 
                 return;
@@ -145,7 +145,7 @@ namespace HW5T1
             if (property.Expected != null)
             {
                 exceptionAfter = this.TryToExecuteAfterOrBeforeTest(instance, this.methods.After);
-                queue.Enqueue(new TestData(method.Name, false, 
+                queue.Enqueue(new TestData(method.Name, Result.Failed, 
                     $"Test did not throw an exception: {property.Expected.ToString()}" + exceptionAfter, stopWatch.ElapsedMilliseconds));
                 return;
             }
@@ -153,11 +153,11 @@ namespace HW5T1
             exceptionAfter = this.TryToExecuteAfterOrBeforeTest(instance, methods.After);
             if (exceptionAfter != "")
             {
-                queue.Enqueue(new TestData(method.Name, false, exceptionAfter, 0));
+                queue.Enqueue(new TestData(method.Name, Result.Failed, exceptionAfter, 0));
                 return;
             }
 
-            queue.Enqueue(new TestData(method.Name, true, null, stopWatch.ElapsedMilliseconds));
+            queue.Enqueue(new TestData(method.Name, Result.Success, null, stopWatch.ElapsedMilliseconds));
         }
 
         /// <summary>
@@ -182,15 +182,15 @@ namespace HW5T1
                 {
                     Console.WriteLine($"Test name: {item.Name}");
                     Console.Write("Result ");
-                    if (item.Result == true)
+                    if (item.Result == Result.Success)
                     {
                         Console.Write(" Success");
                     }
-                    if (item.Result == false)
+                    if (item.Result == Result.Failed)
                     {
                         Console.Write(" Failed");
                     }
-                    if (item.Result == null)
+                    if (item.Result == Result.Ignored)
                     {
                         Console.Write(" Ignored");
                     }
@@ -238,7 +238,7 @@ namespace HW5T1
                 {
                     foreach (var test in this.methods.Tests)
                     {
-                        testInfo.Enqueue(new TestData(test.Name, false, e.Message, 0));
+                        testInfo.Enqueue(new TestData(test.Name, Result.Failed, e.Message, 0));
                     }
 
                     return false;
