@@ -1,10 +1,7 @@
 image: Visual Studio 2019
 
 before_build:
-  - nuget restore Injector\Injector.sln
+  - nuget restore HW5\HW5T1\HW5T1.sln
 
 build_script:
-  - dotnet build Injector\Injector.sln
-
-test_script:
-  - dotnet test Injector\Injector.sln
+  - dotnet build HW5\HW5T1\HW5T1.sln
