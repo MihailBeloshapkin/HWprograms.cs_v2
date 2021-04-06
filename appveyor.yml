@@ -1,8 +1,10 @@
 image: Visual Studio 2019
 
 before_build:
-  - nuget restore HW7\MyNUnitWeb\MyNUnitWeb.sln
+  - nuget restore Injector\Injector.sln
 
 build_script:
-  - dotnet build HW7\MyNUnitWeb\MyNUnitWeb.sln
+  - dotnet build Injector\Injector.sln
 
+test_script:
+  - dotnet test Injector\Injector.sln
