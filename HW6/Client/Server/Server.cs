@@ -22,7 +22,6 @@ namespace HW6T1
         /// <param name="port">port name</param>
         public Server(string host, int port)
         {
-            //    this.port = port;
             this.listener = new TcpListener(IPAddress.Parse(host), port);
             listener.Start();
         }
@@ -69,9 +68,6 @@ namespace HW6T1
                     default:
                         throw new ArgumentException("Incorrect request!");
                 }
-                stream.Dispose();
-                reader.Dispose();
-                writer.Dispose();
             }
         }
 
@@ -89,8 +85,7 @@ namespace HW6T1
 
             var files = Directory.GetFiles(path);
             var directories = Directory.GetDirectories(path);
-            //    await writer.WriteLineAsync(Convert.ToString(directories.Length + files.Length));
-
+            
             var responce = (directories.Length + files.Length).ToString();
 
             foreach (var file in files)

@@ -61,10 +61,6 @@ namespace Gui
                 sizeLong -= maxBufferSize;
             }
             await reader.ReadLineAsync();
-            client.Dispose();
-            stream.Dispose();
-            reader.Dispose();
-            writer.Dispose();
         }
 
 
@@ -96,13 +92,8 @@ namespace Gui
                 var isDir = Convert.ToBoolean(responseSplit[iter * 2 + 2]);
                 result.Add((fullPath, isDir));
             }
-            client.Dispose();
-            stream.Dispose();
-            reader.Dispose();
-            writer.Dispose();
+            
             return result;
         }
-
-
     }
 }

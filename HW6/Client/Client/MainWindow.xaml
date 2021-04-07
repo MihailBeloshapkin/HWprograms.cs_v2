@@ -72,8 +72,8 @@
                     <TextBox Width="Auto" HorizontalAlignment="Stretch" 
                              Text="{Binding Path=DownloadFrom, Mode=TwoWay}"/>
                 </StackPanel>
-                <Button Content="Get" Grid.Column="3" 
-                        Grid.Row="2" Click="Download_Click" Margin="15,15,15,15"/>
+                <Button Content="Get" Grid.Column="1" 
+                        Grid.Row="1" Click="Download_Click"/>
                 <Button Content="Download all"
                         Grid.Column="0" Grid.Row="1"
                         Click="Download_All_Click" />

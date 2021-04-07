@@ -10,13 +10,13 @@ namespace HW4T1Test
 {
     public class Tests
     {
-        private Server server;
+        private HW6T1.Server server;
         private Client client;
 
         [SetUp]
         public void Setup()
         {
-            server = new Server("127.0.0.1", 8888);
+            server = new HW6T1.Server("127.0.0.1", 8888);
             client = new Client("127.0.0.1", 8888);
             _ = server.Process();
         }

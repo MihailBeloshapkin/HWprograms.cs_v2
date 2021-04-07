@@ -41,6 +41,9 @@ namespace Gui
 
         private string selectedFolder;
 
+        /// <summary>
+        /// Selected folder in the list box.
+        /// </summary>
         public string SelectedFolder
         {
             get => this.selectedFolder;
@@ -50,8 +53,6 @@ namespace Gui
                 OnPropertyChanged("SelectedFolder");
             }
         }
-           
-
 
         /// <summary>
         /// In case if we want to download file we should specify the DownloadFrom path.
@@ -145,8 +146,6 @@ namespace Gui
             }
         }
 
-    //    HW6T1.Server server;
-
         /// <summary>
         /// Establish connection.
         /// </summary>
@@ -154,7 +153,6 @@ namespace Gui
         {
             try
             {
-      //          this.server = new HW6T1.Server(ip, int.Parse(port));
                 this.client = new Client(ip, int.Parse(port));
             }
             catch (FormatException)
@@ -167,9 +165,10 @@ namespace Gui
                 MessageBox.Show("Connection failed!");
                 return;
             }
-        //    _ = server.Process();
+    
             await UpdateList();
         }
+
 
         /// <summary>
         /// Update list of files and folders.
@@ -177,12 +176,17 @@ namespace Gui
         public async Task UpdateList()
         {
             this.AllData.Clear();
+            if (this.client == null)
+            {
+                MessageBox.Show("No connection");
+                return;
+            }
             if (serverPath == "" || this.serverPath == null)
             {
                 MessageBox.Show("Input path!");
                 return;
             }
-            List<(string, bool)> updatedData;
+            
             try
             {
                 var pathToServer = serverPath;
@@ -205,7 +209,6 @@ namespace Gui
                     }
 
                 }, System.Threading.CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext()); 
-            //    updatedData = await this.client.List(pathToServer);
             }
             catch (AggregateException)
             {
@@ -225,6 +228,7 @@ namespace Gui
             
             this.history.Clear();
             this.history.Push(this.AllData);
+            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -330,6 +334,7 @@ namespace Gui
                         Directory.CreateDirectory(downloadTo);
                     }
                     await Task.Run(() => this.DownloadFromTo(this.downloadFrom, "../../../../destination"));
+                    this.Downloads.Add(Path.GetFileName(AllData[li]));
                 }
             }
         }
