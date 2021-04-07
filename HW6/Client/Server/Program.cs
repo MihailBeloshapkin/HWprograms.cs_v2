@@ -10,7 +10,7 @@ namespace Server
         static async Task Main(string[] args)
         {
             var server = new HW6T1.Server("127.0.0.1", 8888);
-            _ = server.Process();
+            await server.Process();
         }
     }
 }

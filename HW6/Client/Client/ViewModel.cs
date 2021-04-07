@@ -107,7 +107,7 @@ namespace Gui
                 }
                 else
                 {
-                    MessageBox.Show("Unable to change connection.");
+                    MessageBox.Show("Impossible to change connection");
                 }
             }
         }
@@ -120,8 +120,15 @@ namespace Gui
             get => this.port;
             set
             {
-                port = value;
-                OnPropertyChanged("Port");
+                if (this.client == null)
+                {
+                    port = value;
+                    OnPropertyChanged("Port");
+                }
+                else
+                {
+                    MessageBox.Show("Impossible to change connection");
+                }
             }
         }
 
@@ -138,7 +145,8 @@ namespace Gui
             }
         }
 
-        
+    //    HW6T1.Server server;
+
         /// <summary>
         /// Establish connection.
         /// </summary>
@@ -146,6 +154,7 @@ namespace Gui
         {
             try
             {
+      //          this.server = new HW6T1.Server(ip, int.Parse(port));
                 this.client = new Client(ip, int.Parse(port));
             }
             catch (FormatException)
@@ -158,7 +167,7 @@ namespace Gui
                 MessageBox.Show("Connection failed!");
                 return;
             }
-            
+        //    _ = server.Process();
             await UpdateList();
         }
 
@@ -177,7 +186,31 @@ namespace Gui
             try
             {
                 var pathToServer = serverPath;
-                updatedData = await this.client.List(pathToServer);
+                Task t = Task.Factory.StartNew(() =>
+                {
+                    return this.client.List(pathToServer);
+                }).ContinueWith((task) =>
+                {
+                    try
+                    {
+                        foreach (var item in task.Result.Result)
+                        {
+                            this.AllData.Add(item.Item1);
+                        }
+                    }
+                    catch (AggregateException)
+                    {
+                        MessageBox.Show("Impossible to connect.");
+                        return;
+                    }
+
+                }, System.Threading.CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext()); 
+            //    updatedData = await this.client.List(pathToServer);
+            }
+            catch (AggregateException)
+            {
+                MessageBox.Show("Impossible to connect.");
+                return;
             }
             catch (SocketException)
             {
@@ -189,10 +222,7 @@ namespace Gui
                 MessageBox.Show(e.Message);
                 return;
             }
-            foreach (var item in updatedData)
-            {
-                this.AllData.Add(item.Item1);
-            }
+            
             this.history.Clear();
             this.history.Push(this.AllData);
         }

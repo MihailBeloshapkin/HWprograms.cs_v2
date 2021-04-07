@@ -39,11 +39,13 @@
 
                 <StackPanel Grid.Row="0" Grid.Column="2">
                     <Label Content="IP:"/>
-                    <TextBox MinWidth="200" Text="{Binding Path=Ip, Mode=TwoWay}"/>
+                    <TextBox Width="Auto" HorizontalAlignment="Stretch"
+                             Text="{Binding Path=Ip, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="3">
                     <Label Content="Port:"/>
-                    <TextBox MinWidth="200" Text="{Binding Path=Port, Mode=TwoWay}"/>
+                    <TextBox Width="Auto" HorizontalAlignment="Stretch"
+                             Text="{Binding Path=Port, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" >
                     <Label Content="Show content from:"/>
@@ -62,11 +64,12 @@
                          />
                 <StackPanel Grid.Row="0" Grid.Column="0">
                     <Label Content="Download to:"/>
-                    <TextBox MinWidth="200" Text="{Binding Path=DownloadTo, Mode=TwoWay}"/>
+                    <TextBox Width="Auto" HorizontalAlignment="Stretch"
+                             Text="{Binding Path=DownloadTo, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="1">
                     <Label Content="Download from:"/>
-                    <TextBox MinWidth="200" 
+                    <TextBox Width="Auto" HorizontalAlignment="Stretch" 
                              Text="{Binding Path=DownloadFrom, Mode=TwoWay}"/>
                 </StackPanel>
                 <Button Content="Get" Grid.Column="3" 

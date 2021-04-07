@@ -35,7 +35,7 @@ namespace HW6T1
             while (true)
             {
                 var client = await listener.AcceptTcpClientAsync();
-                await Task.Run(() => this.Run(client));
+                Parallel.Invoke(async () => await this.Run(client));
             }
         }
 

@@ -85,15 +85,15 @@ namespace Gui
                 throw new Exception("Directory not found");
             }
 
-            var responceSplit = response.Split(' ');
-            var size = int.Parse(responceSplit[0]);
+            var responseSplit = response.Split(' ');
+            var size = int.Parse(responseSplit[0]);
 
             var result = new List<(string, bool)>();
 
-            for (int iter = 0; iter * 2 + 2 < responceSplit.Length; iter++)
+            for (int iter = 0; iter * 2 + 2 < responseSplit.Length; iter++)
             {
-                var fullPath = responceSplit[iter * 2 + 1];
-                var isDir = Convert.ToBoolean(responceSplit[iter * 2 + 2]);
+                var fullPath = responseSplit[iter * 2 + 1];
+                var isDir = Convert.ToBoolean(responseSplit[iter * 2 + 2]);
                 result.Add((fullPath, isDir));
             }
             client.Dispose();
