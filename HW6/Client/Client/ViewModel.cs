@@ -22,12 +22,17 @@ namespace Gui
         public event PropertyChangedEventHandler PropertyChanged;
         private string serverPath;
         private string downloadFrom;
-        private string downloadTo;
+        private string downloadTo = "../../../../reposit";
 
         /// <summary>
         /// Previous files and folders.
         /// </summary>
         private Stack<ObservableCollection<String>> history = new Stack<ObservableCollection<string>>();
+
+        /// <summary>
+        /// Previous files to download.
+        /// </summary>
+        private Stack<ObservableCollection<string>> filesArchive = new Stack<ObservableCollection<string>>();
 
         /// <summary>
         /// Contains info about names of downloaded files and their status.
@@ -39,7 +44,47 @@ namespace Gui
         /// </summary>
         public ObservableCollection<string> AllData { get; set; } = new ObservableCollection<string>();
 
+        public ObservableCollection<string> files { get; set; } = new ObservableCollection<string>();
+
         private string selectedFolder;
+
+        private string isEnabledBackButton = "False";
+
+        private string isEnabledDownloadAllButton = "False";
+
+        public string isEnabledShowButton = "False";
+
+        public string IsEnabledDownloadAllButton
+        {
+            get => this.isEnabledDownloadAllButton;
+            set
+            {
+                this.isEnabledDownloadAllButton = value;
+                OnPropertyChanged("IsEnabledDownloadAllButton");
+            }
+        }
+
+        
+        public string IsEnabledBackButton
+        {
+            get => this.isEnabledBackButton;
+            set
+            {
+                this.isEnabledBackButton = value;
+                OnPropertyChanged("IsEnabledBackButton");
+            }
+        }
+
+        public string IsEnabledShowButton
+        {
+            get => this.isEnabledShowButton;
+            set
+            {
+                this.isEnabledShowButton = value;
+                OnPropertyChanged("IsEnabledShowButton");
+            }
+        }
+
 
         /// <summary>
         /// Selected folder in the list box.
@@ -133,6 +178,18 @@ namespace Gui
             }
         }
 
+        private string selectedFile;
+
+        public string SelectedFile
+        {
+            get => this.selectedFile;
+            set
+            {
+                this.selectedFile = value;
+                OnPropertyChanged("SelectedFile");
+            }
+        }
+
         public ViewModel()
         {
 
@@ -149,7 +206,7 @@ namespace Gui
         /// <summary>
         /// Establish connection.
         /// </summary>
-        public async Task EstablishConnection()
+        public void EstablishConnection()
         {
             try
             {
@@ -165,30 +222,32 @@ namespace Gui
                 MessageBox.Show("Connection failed!");
                 return;
             }
-    
-            await UpdateList();
+
+            UpdateList();
+            this.IsEnabledDownloadAllButton = "True";
+            this.IsEnabledShowButton = "True";
         }
 
 
         /// <summary>
         /// Update list of files and folders.
         /// </summary>
-        public async Task UpdateList()
+        public void UpdateList()
         {
             this.AllData.Clear();
+            this.files.Clear();
             if (this.client == null)
             {
                 MessageBox.Show("No connection");
                 return;
             }
-            if (serverPath == "" || this.serverPath == null)
-            {
-                MessageBox.Show("Input path!");
-                return;
-            }
             
             try
             {
+                if (serverPath == "" || this.serverPath == null)
+                {
+                    this.serverPath = ".";
+                }
                 var pathToServer = serverPath;
                 Task t = Task.Factory.StartNew(() =>
                 {
@@ -200,11 +259,18 @@ namespace Gui
                         foreach (var item in task.Result.Result)
                         {
                             this.AllData.Add(item.Item1);
+                            if (!item.Item2)
+                            {
+                                this.files.Add(item.Item1);
+                            }
                         }
                     }
                     catch (AggregateException)
                     {
-                        MessageBox.Show("Impossible to connect.");
+                        MessageBox.Show("Impossible to connect. Try again.");
+                        this.client = null;
+                        this.IsEnabledDownloadAllButton = "False";
+                        this.IsEnabledShowButton = "False";
                         return;
                     }
 
@@ -220,15 +286,9 @@ namespace Gui
                 MessageBox.Show("Impossible to connect.");
                 return;
             }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                return;
-            }
             
             this.history.Clear();
             this.history.Push(this.AllData);
-            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -239,21 +299,34 @@ namespace Gui
             try
             {
                 var data = await this.client.List(this.selectedFolder);
-                var arch = new ObservableCollection<string>();
+                var archAllData = new ObservableCollection<string>();
+                var archFiles = new ObservableCollection<string>();
                 foreach (var item in this.AllData)
                 {
-                    arch.Add(item);
+                    archAllData.Add(item);
                 }
-                this.history.Push(arch);
+                foreach (var item in this.files)
+                {
+                    archFiles.Add(item);
+                }
+
+                this.history.Push(archAllData);
+                this.filesArchive.Push(archFiles);
                 this.AllData.Clear();
+                this.files.Clear();
                 foreach (var item in data)
                 {
                     this.AllData.Add(item.Item1);
+                    if (!item.Item2)
+                    {
+                        this.files.Add(item.Item1);
+                    }
                 }
+                this.IsEnabledBackButton = "True";
             }
-            catch (Exception)
+            catch (SocketException)
             {
-                MessageBox.Show("Impossible operation");
+                MessageBox.Show("Impossible to connect.");
             }
         }
 
@@ -263,11 +336,23 @@ namespace Gui
         public void Back()
         {
             this.AllData.Clear();
+            this.files.Clear();
             try
             {
                 foreach (var item in this.history.Pop())
                 {
                     this.AllData.Add(item);
+                }
+
+                foreach (var item in this.filesArchive.Pop())
+                {
+                    this.files.Add(item);
+                }
+
+                if (this.history.Count == 1)
+                {
+                    this.IsEnabledBackButton = "False";
+                    return;
                 }
             }
             catch (Exception)
@@ -288,11 +373,12 @@ namespace Gui
                 {
                     Directory.CreateDirectory(downloadTo);
                 }
-                this.Downloads.Add(Path.GetFileName(downloadFrom) + "installing");
+                this.Downloads.Add(Path.GetFileName(this.selectedFile) + " installing");
                 
-                await client.Get(downloadFrom, downloadTo);
-                this.Downloads.Remove(Path.GetFileName(downloadFrom) + "installing");
-                this.Downloads.Add(Path.GetFileName(downloadFrom));
+                await client.Get(this.SelectedFile, downloadTo);
+                this.Downloads.Remove(Path.GetFileName(this.selectedFile) + " installing");
+                this.Downloads.Add(Path.GetFileName(this.selectedFile));
+                MessageBox.Show($"Your file was downloaded at: {this.downloadTo}");
             }
             catch (SocketException)
             {

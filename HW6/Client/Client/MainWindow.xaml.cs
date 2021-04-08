@@ -29,16 +29,12 @@ namespace Gui
             this.DataContext = viewModel;
         }
 
-        private async void Connect_Click(object sender, RoutedEventArgs e)
-            => await viewModel.EstablishConnection();
+        private void Connect_Click(object sender, RoutedEventArgs e)
+            => viewModel.EstablishConnection();
         
 
-        private void Download_Click(object sender, RoutedEventArgs e)
-            => _ = viewModel.DownloadFile();
-        
-
-        private async void Show_Click(object sender, RoutedEventArgs e)
-            => await this.viewModel.UpdateList();
+        private void Show_Click(object sender, RoutedEventArgs e)
+            => this.viewModel.UpdateList();
         
 
         private void Back_Click(object sender, RoutedEventArgs e)
@@ -51,6 +47,8 @@ namespace Gui
 
         private async void Download_All_Click(object sender, RoutedEventArgs e)
             => await this.viewModel.DownloadAll();
-        
+
+        private async void DownloadSelectedFile(object sender, MouseButtonEventArgs e)
+            => await this.viewModel.DownloadFile();
     }
 }
