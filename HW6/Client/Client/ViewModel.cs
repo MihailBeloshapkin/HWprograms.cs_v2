@@ -68,7 +68,7 @@ namespace Gui
         }
 
         /// <summary>
-        /// Is button that gives an opportunuti to go back enabled.
+        /// Is button that gives an opportunity to go back enabled.
         /// </summary>
         public string IsEnabledBackButton
         {
