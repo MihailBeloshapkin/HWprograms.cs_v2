@@ -78,7 +78,7 @@ namespace Gui
             var response = await reader.ReadLineAsync();
             if (response == "-1")
             {
-                throw new Exception("Directory not found");
+                throw new ArgumentException("Directory not found");
             }
 
             var responseSplit = response.Split(' ');

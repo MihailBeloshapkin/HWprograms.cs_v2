@@ -332,7 +332,11 @@ namespace Gui
                 }
                 this.IsEnabledBackButton = "True";
             }
-            catch (Exception)
+            catch (ArgumentException)
+            {
+                return;
+            }
+            catch (SocketException)
             {
                 MessageBox.Show("Impossible to connect.");
             }
