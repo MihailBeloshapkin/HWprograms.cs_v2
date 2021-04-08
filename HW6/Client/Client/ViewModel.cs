@@ -44,6 +44,9 @@ namespace Gui
         /// </summary>
         public ObservableCollection<string> AllData { get; set; } = new ObservableCollection<string>();
 
+        /// <summary>
+        /// Contains files that we can download.
+        /// </summary>
         public ObservableCollection<string> files { get; set; } = new ObservableCollection<string>();
 
         private string selectedFolder;
@@ -64,7 +67,9 @@ namespace Gui
             }
         }
 
-        
+        /// <summary>
+        /// Is button that gives an opportunuti to go back enabled.
+        /// </summary>
         public string IsEnabledBackButton
         {
             get => this.isEnabledBackButton;
@@ -75,6 +80,9 @@ namespace Gui
             }
         }
 
+        /// <summary>
+        /// Is button that shows content in current path enabled.
+        /// </summary>
         public string IsEnabledShowButton
         {
             get => this.isEnabledShowButton;
