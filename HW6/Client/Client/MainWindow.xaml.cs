@@ -31,24 +31,30 @@ namespace Gui
 
         private void Connect_Click(object sender, RoutedEventArgs e)
             => viewModel.EstablishConnection();
-        
-
-        private void Show_Click(object sender, RoutedEventArgs e)
-            => this.viewModel.UpdateList();
-        
 
         private void Back_Click(object sender, RoutedEventArgs e)
             => this.viewModel.Back();
         
-
         private void GetIntoFolder(object sender, MouseButtonEventArgs e)
             => this.viewModel.GetIntoFolder();
         
+        private void Download_All_Click(object sender, RoutedEventArgs e)
+            => this.viewModel.DownloadAll();
 
-        private async void Download_All_Click(object sender, RoutedEventArgs e)
-            => await this.viewModel.DownloadAll();
+        private void InsertedPort(object sender, TextChangedEventArgs e)
+        {
+            if (this.viewModel.Ip != null)
+            {
+                this.viewModel.IsEnabledConnectButton = "True";
+            }
+        }
 
-        private async void DownloadSelectedFile(object sender, MouseButtonEventArgs e)
-            => await this.viewModel.DownloadFile();
+        private void InsertedIp(object sender, TextChangedEventArgs e)
+        {
+            if (this.viewModel.Port != null)
+            {
+                this.viewModel.IsEnabledConnectButton = "True";
+            }
+        }
     }
 }

@@ -20,20 +20,15 @@ namespace Gui
         private string port;
         private Client client;
         public event PropertyChangedEventHandler PropertyChanged;
-        private string serverPath;
-        private string downloadFrom;
-        private string downloadTo = "../../../../reposit";
+        private string serverPath = ".";
+        private string downloadDestination = "../../../../reposit";
 
         /// <summary>
         /// Previous files and folders.
         /// </summary>
         private Stack<ObservableCollection<String>> history = new Stack<ObservableCollection<string>>();
 
-        /// <summary>
-        /// Previous files to download.
-        /// </summary>
-        private Stack<ObservableCollection<string>> filesArchive = new Stack<ObservableCollection<string>>();
-
+        
         /// <summary>
         /// Contains info about names of downloaded files and their status.
         /// </summary>
@@ -44,19 +39,36 @@ namespace Gui
         /// </summary>
         public ObservableCollection<string> AllData { get; set; } = new ObservableCollection<string>();
 
-        /// <summary>
-        /// Contains files that we can download.
-        /// </summary>
-        public ObservableCollection<string> files { get; set; } = new ObservableCollection<string>();
+        private List<bool> isDir = new List<bool>();
 
-        private string selectedFolder;
+        private Stack<List<bool>> isDirHistory = new Stack<List<bool>>();
+
+        private string selectedData;
 
         private string isEnabledBackButton = "False";
 
         private string isEnabledDownloadAllButton = "False";
+        
+        private string isEnabledShowButton = "False";
 
-        public string isEnabledShowButton = "False";
+        private string isEnabledConnectButton = "False";
 
+        /// <summary>
+        /// Is button that provides connection enable.
+        /// </summary>
+        public string IsEnabledConnectButton
+        {
+            get => this.isEnabledConnectButton;
+            set
+            {
+                this.isEnabledConnectButton = value;
+                OnPropertyChanged("IsEnabledConnectButton");
+            }
+        }
+
+        /// <summary>
+        /// Is button that gives an opportunity to download all enabled.
+        /// </summary>
         public string IsEnabledDownloadAllButton
         {
             get => this.isEnabledDownloadAllButton;
@@ -97,52 +109,13 @@ namespace Gui
         /// <summary>
         /// Selected folder in the list box.
         /// </summary>
-        public string SelectedFolder
+        public string SelectedData
         {
-            get => this.selectedFolder;
+            get => this.selectedData;
             set
             {
-                this.selectedFolder = value;
-                OnPropertyChanged("SelectedFolder");
-            }
-        }
-
-        /// <summary>
-        /// In case if we want to download file we should specify the DownloadFrom path.
-        /// </summary>
-        public string DownloadFrom
-        {
-            get => this.downloadFrom;
-            set
-            {
-                this.downloadFrom = value;
-                OnPropertyChanged("DownloadFrom");
-            }
-        }
-
-        /// <summary>
-        /// In case if we want to download file we should specify the DownloadTo path.
-        /// </summary>
-        public string DownloadTo
-        {
-            get => this.downloadTo;
-            set
-            {
-                this.downloadTo = value;
-                OnPropertyChanged("DownloadTo");
-            }
-        }
-
-        /// <summary>
-        /// Servers shows files and folders by this path. 
-        /// </summary>
-        public string ServerPath
-        {
-            get => this.serverPath;
-            set
-            {
-                this.serverPath = value;
-                OnPropertyChanged("ServerPath");
+                this.selectedData = value;
+                OnPropertyChanged("SelectedData");
             }
         }
 
@@ -225,25 +198,15 @@ namespace Gui
                 MessageBox.Show("Incorrect input!");
                 return;
             }
-            catch (Exception)
-            {
-                MessageBox.Show("Connection failed!");
-                return;
-            }
 
             UpdateList();
-            this.IsEnabledDownloadAllButton = "True";
-            this.IsEnabledShowButton = "True";
         }
-
 
         /// <summary>
         /// Update list of files and folders.
         /// </summary>
         public void UpdateList()
         {
-            this.AllData.Clear();
-            this.files.Clear();
             if (this.client == null)
             {
                 MessageBox.Show("No connection");
@@ -252,10 +215,6 @@ namespace Gui
             
             try
             {
-                if (serverPath == "" || this.serverPath == null)
-                {
-                    this.serverPath = ".";
-                }
                 var pathToServer = serverPath;
                 Task t = Task.Factory.StartNew(() =>
                 {
@@ -264,14 +223,32 @@ namespace Gui
                 {
                     try
                     {
+                        if (task.Result == null)
+                        {
+                            return;
+                        }
+
+                        this.AllData.Clear();
+                        this.isDir.Clear();
+
                         foreach (var item in task.Result.Result)
                         {
                             this.AllData.Add(item.Item1);
-                            if (!item.Item2)
-                            {
-                                this.files.Add(item.Item1);
-                            }
+                            this.isDir.Add(item.Item2);
+
+                            this.IsEnabledDownloadAllButton = "True";
+                            this.IsEnabledShowButton = "True";
                         }
+
+                        this.history.Clear();
+                        this.history.Push(this.AllData);
+                        this.isDirHistory.Clear();
+                        this.isDirHistory.Push(this.isDir);
+                    }
+                    catch (ArgumentException)
+                    {
+                        MessageBox.Show("Impossible to data from this dir");
+                        return;
                     }
                     catch (AggregateException)
                     {
@@ -294,9 +271,7 @@ namespace Gui
                 MessageBox.Show("Impossible to connect.");
                 return;
             }
-            
-            this.history.Clear();
-            this.history.Push(this.AllData);
+
         }
 
         /// <summary>
@@ -304,37 +279,37 @@ namespace Gui
         /// </summary>
         public async void GetIntoFolder()
         {
+            if (!isDir[this.AllData.IndexOf(this.selectedData)])
+            {
+                await this.DownloadFile();
+                return;
+            }
             try
             {
-                var data = await this.client.List(this.selectedFolder);
+                var data = await this.client.List(this.selectedData);
                 var archAllData = new ObservableCollection<string>();
                 var archFiles = new ObservableCollection<string>();
+                var archIsDir = new List<bool>();
                 foreach (var item in this.AllData)
                 {
                     archAllData.Add(item);
                 }
-                foreach (var item in this.files)
+                foreach (var item in this.isDir)
                 {
-                    archFiles.Add(item);
+                    archIsDir.Add(item);
                 }
 
                 this.history.Push(archAllData);
-                this.filesArchive.Push(archFiles);
+                this.isDirHistory.Push(archIsDir);
                 this.AllData.Clear();
-                this.files.Clear();
+                
+                this.isDir.Clear();
                 foreach (var item in data)
                 {
                     this.AllData.Add(item.Item1);
-                    if (!item.Item2)
-                    {
-                        this.files.Add(item.Item1);
-                    }
+                    this.isDir.Add(item.Item2);
                 }
                 this.IsEnabledBackButton = "True";
-            }
-            catch (ArgumentException)
-            {
-                return;
             }
             catch (SocketException)
             {
@@ -348,7 +323,7 @@ namespace Gui
         public void Back()
         {
             this.AllData.Clear();
-            this.files.Clear();
+            this.isDir.Clear();
             try
             {
                 foreach (var item in this.history.Pop())
@@ -356,9 +331,9 @@ namespace Gui
                     this.AllData.Add(item);
                 }
 
-                foreach (var item in this.filesArchive.Pop())
+                foreach (var item in this.isDirHistory.Pop())
                 {
-                    this.files.Add(item);
+                    this.isDir.Add(item);
                 }
 
                 if (this.history.Count == 1)
@@ -367,7 +342,7 @@ namespace Gui
                     return;
                 }
             }
-            catch (Exception)
+            catch (InvalidOperationException)
             {
                 MessageBox.Show("Impossible operation");
             }
@@ -381,16 +356,16 @@ namespace Gui
         {
             try
             {
-                if (!Directory.Exists(downloadTo))
+                if (!Directory.Exists(downloadDestination))
                 {
-                    Directory.CreateDirectory(downloadTo);
+                    Directory.CreateDirectory(downloadDestination);
                 }
-                this.Downloads.Add(Path.GetFileName(this.selectedFile) + " installing");
+                this.Downloads.Add(Path.GetFileName(this.selectedData) + " installing");
                 
-                await client.Get(this.SelectedFile, downloadTo);
-                this.Downloads.Remove(Path.GetFileName(this.selectedFile) + " installing");
-                this.Downloads.Add(Path.GetFileName(this.selectedFile));
-                MessageBox.Show($"Your file was downloaded at: {this.downloadTo}");
+                await client.Get(this.SelectedData, downloadDestination);
+                this.Downloads.Remove(Path.GetFileName(this.selectedData) + " installing");
+                this.Downloads.Add(Path.GetFileName(this.selectedData));
+                MessageBox.Show($"Your file was downloaded at: {this.downloadDestination}");
             }
             catch (SocketException)
             {
@@ -406,7 +381,8 @@ namespace Gui
                 {
                     Directory.CreateDirectory(downloadTo);
                 }
-                await client.Get(downloadFrom, downloadTo);
+                await client.Get(downloadFrom, downloadTo); 
+
             }
             catch (SocketException)
             {
@@ -417,21 +393,20 @@ namespace Gui
         /// <summary>
         /// Download all from the current directory.
         /// </summary>
-        public async Task DownloadAll()
+        public void DownloadAll()
         {
             var tasks = new List<Task>();
             for (int iter = 0; iter < this.AllData.Count; iter++)
             {
                 var li = iter;
-                if (File.Exists(AllData[li]))
+                if (!isDir[li])
                 {
-                    this.downloadFrom = AllData[li];
-                    this.downloadTo = "../../../../destination";
-                    if (!Directory.Exists(downloadTo))
+                    var downloadFrom = AllData[li];
+                    if (!Directory.Exists(this.downloadDestination))
                     {
-                        Directory.CreateDirectory(downloadTo);
+                        Directory.CreateDirectory(this.downloadDestination);
                     }
-                    await Task.Run(() => this.DownloadFromTo(this.downloadFrom, "../../../../destination"));
+                    Parallel.Invoke(async () => await this.DownloadFromTo(downloadFrom, this.downloadDestination));
                     this.Downloads.Add(Path.GetFileName(AllData[li]));
                 }
             }
